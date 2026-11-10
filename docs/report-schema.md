@@ -66,12 +66,36 @@ Any numeric field may be `null`, which means "not recorded". It shows as "—" a
 
 ## Thresholds
 
-`report-manager/config/thresholds.json` controls PASS/WARN/FAIL highlighting. It is re-read on every request.
+You can manage thresholds in the app under **Thresholds** (`/settings/thresholds`), or edit `report-manager/config/thresholds.json` by hand. The file is re-read on every request, so changes apply right away.
 
-- `default`: limits that apply to every model.
-  - `hashrateMinPct`: `{ warn, fail }`. A hashrate below this percent of expected warns or fails.
-  - Temperature and delta keys: `{ warn, fail }`. A value strictly above the limit warns or fails.
-- `models["<model name>"]`: `expectedHashrateTHs`, plus any of the default keys to override them for that model. The expected hashrate for each hashboard is the miner's expected hashrate ÷ 3.
-- For a model with no entry, temperatures are still checked but hashrate is not flagged.
+```json
+{
+  "default": {
+    "hashrateMinPct": { "enabled": true, "warn": 95, "fail": 90 },
+    "avgChipTempC":   { "enabled": true, "warn": 85, "fail": 95 },
+    "llcTempDeltaC":  { "enabled": false, "warn": 10, "fail": 15 }
+  },
+  "models": {
+    "Antminer S21": {
+      "expectedHashrateTHs": 200,
+      "avgChipTempC": { "enabled": true, "warn": 90, "fail": 100 },
+      "pfcTempC": { "enabled": false }
+    }
+  }
+}
+```
+
+- **`default`**: the global checks. There is one entry per metric: `hashrateMinPct`, `avgPcbTempC`, `pcbTempDeltaC`, `avgChipTempC`, `chipTempDeltaC`, `pfcTempC`, `avgLlcTempC` and `llcTempDeltaC`.
+  - `hashrateMinPct`: hashrate below `warn` or `fail` percent of the expected hashrate is flagged.
+  - Every other metric: a value strictly above `warn` or `fail` is flagged.
+  - `enabled: false` turns the check off, but the limits are kept so they come back when you turn it on again. A missing `enabled` means `true`. A metric missing from the file entirely counts as off.
+- **`models["<model name>"]`**: matched against a report's model name, ignoring case.
+  - `expectedHashrateTHs` is the expected hashrate. Each hashboard is expected to produce a third of it. If a model has no entry, its hashrate isn't checked.
+  - A metric key overrides the global entry one field at a time. For example, `{ "enabled": false }` turns the check off for this model only. `{ "enabled": true, "warn": …, "fail": … }` sets custom limits, and also turns the check on for this model if it is off globally.
+- **Disabled checks**: the value still appears on the report. It is never highlighted and doesn't affect the overall PASS/WARN/FAIL status.
+- **Validation**:
+  - Every enabled check needs both limits.
+  - For temperatures, warn must be ≤ fail. For hashrate, fail % must be ≤ warn %, and both must be 0–200.
+  - Model names must be unique, ignoring case.
 
 The shipped numbers are placeholders based on nominal specs. Tune them to your fleet.

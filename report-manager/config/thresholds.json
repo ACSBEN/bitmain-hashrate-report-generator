@@ -1,21 +1,67 @@
 {
   "default": {
-    "hashrateMinPct": { "warn": 95, "fail": 90 },
-    "avgPcbTempC": { "warn": 75, "fail": 85 },
-    "pcbTempDeltaC": { "warn": 10, "fail": 15 },
-    "avgChipTempC": { "warn": 85, "fail": 95 },
-    "chipTempDeltaC": { "warn": 10, "fail": 15 },
-    "pfcTempC": { "warn": 80, "fail": 90 },
-    "avgLlcTempC": { "warn": 80, "fail": 90 },
-    "llcTempDeltaC": { "warn": 10, "fail": 15 }
+    "hashrateMinPct": {
+      "enabled": false,
+      "warn": 95,
+      "fail": 90
+    },
+    "avgPcbTempC": {
+      "enabled": false,
+      "warn": 75,
+      "fail": 85
+    },
+    "pcbTempDeltaC": {
+      "enabled": false,
+      "warn": 10,
+      "fail": 15
+    },
+    "avgChipTempC": {
+      "enabled": false,
+      "warn": 85,
+      "fail": 95
+    },
+    "chipTempDeltaC": {
+      "enabled": false,
+      "warn": 10,
+      "fail": 15
+    },
+    "pfcTempC": {
+      "enabled": false,
+      "warn": 80,
+      "fail": 90
+    },
+    "avgLlcTempC": {
+      "enabled": false,
+      "warn": 80,
+      "fail": 90
+    },
+    "llcTempDeltaC": {
+      "enabled": false,
+      "warn": 10,
+      "fail": 15
+    }
   },
   "models": {
-    "Antminer S19j Pro": { "expectedHashrateTHs": 104 },
-    "Antminer S19k Pro": { "expectedHashrateTHs": 120 },
-    "Antminer S19 XP": { "expectedHashrateTHs": 140 },
-    "Antminer S21": { "expectedHashrateTHs": 200 },
-    "Antminer S21 Pro": { "expectedHashrateTHs": 234 },
-    "Antminer S21 XP": { "expectedHashrateTHs": 270 },
-    "Antminer T21": { "expectedHashrateTHs": 190 }
+    "Antminer S19j Pro": {
+      "expectedHashrateTHs": 104
+    },
+    "Antminer S19k Pro": {
+      "expectedHashrateTHs": 120
+    },
+    "Antminer S19 XP": {
+      "expectedHashrateTHs": 140
+    },
+    "Antminer S21": {
+      "expectedHashrateTHs": 200
+    },
+    "Antminer S21 Pro": {
+      "expectedHashrateTHs": 234
+    },
+    "Antminer S21 XP": {
+      "expectedHashrateTHs": 270
+    },
+    "Antminer T21": {
+      "expectedHashrateTHs": 190
+    }
   }
 }

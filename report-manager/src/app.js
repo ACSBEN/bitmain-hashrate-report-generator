@@ -4,6 +4,7 @@ const path = require('node:path');
 const express = require('express');
 const { createStore } = require('./store');
 const reportRoutes = require('./routes/reports');
+const settingsRoutes = require('./routes/settings');
 const format = require('./format');
 
 const ROOT = path.join(__dirname, '..');
@@ -22,7 +23,13 @@ function createApp({
   app.use(express.urlencoded({ extended: true, limit: '100kb' }));
   app.use(express.static(path.join(ROOT, 'public')));
 
+  app.use((req, res, next) => {
+    res.locals.currentPath = req.path;
+    next();
+  });
+
   app.use(reportRoutes({ store, thresholdsFile, publicDir: path.join(ROOT, 'public') }));
+  app.use(settingsRoutes({ thresholdsFile }));
 
   app.use((req, res) => {
     res.status(404).render('error', { title: 'Not found', message: 'That page or report does not exist.' });

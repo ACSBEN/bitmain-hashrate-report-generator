@@ -4,6 +4,7 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { normalizeReport } = require('./schema');
+const { writeJsonAtomic } = require('./fs-util');
 
 const ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -20,19 +21,13 @@ class ValidationError extends Error {
 
 /**
  * File-backed report store: one JSON file per report at <dir>/<id>.json.
- * Writes go to a temp file first and are renamed into place so a crash never
- * leaves a half-written report behind.
+ * Writes are atomic (see fs-util), so a crash never leaves a half-written
+ * report behind.
  */
 function createStore(dir) {
   const fileFor = (id) => path.join(dir, `${id}.json`);
 
-  async function writeAtomic(report) {
-    await fs.mkdir(dir, { recursive: true });
-    const target = fileFor(report.id);
-    const tmp = `${target}.${crypto.randomUUID()}.tmp`;
-    await fs.writeFile(tmp, JSON.stringify(report, null, 2) + '\n', 'utf8');
-    await fs.rename(tmp, target);
-  }
+  const writeAtomic = (report) => writeJsonAtomic(fileFor(report.id), report);
 
   async function readFile(id) {
     try {

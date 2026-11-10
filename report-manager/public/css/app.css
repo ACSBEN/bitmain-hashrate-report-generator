@@ -102,3 +102,42 @@ legend { font-weight: 700; padding: 0 6px; margin-left: -6px; }
   body { background: #fff; }
   .page { max-width: none; padding: 0; }
 }
+
+/* Nav */
+.topbar-nav { display: flex; align-items: center; gap: 18px; }
+.nav-link { color: #aab4c3; text-decoration: none; font-size: 0.92rem; padding: 4px 0; border-bottom: 2px solid transparent; }
+.nav-link:hover { color: #fff; }
+.nav-link.active { color: #fff; border-bottom-color: var(--accent); }
+
+/* Threshold settings */
+.card h2 { margin: 0 0 4px; font-size: 1.1rem; }
+.card-head p { margin: 0 0 12px; max-width: 75ch; }
+table.settings { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+table.settings th, table.settings td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: middle; }
+table.settings thead th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+table.settings tbody th { font-weight: 600; white-space: nowrap; }
+table.settings .center { text-align: center; }
+table.settings .num { text-align: right; font-variant-numeric: tabular-nums; }
+table.settings td .with-unit { min-width: 110px; }
+table.settings select { min-width: 130px; }
+.toggle { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+.row-off th, .row-off td:not(.center) { opacity: 0.45; }
+.rule-off { font-weight: 600; }
+.js .override-row:not([data-mode="custom"]) .limit .with-unit { visibility: hidden; }
+.row-actions { display: flex; gap: 6px; justify-content: flex-end; }
+.row-actions form { margin: 0; }
+.btn-small { padding: 4px 10px; font-size: 0.82rem; }
+.chip {
+  display: inline-block; margin: 2px 4px 2px 0; padding: 1px 8px; border-radius: 999px;
+  background: #e8f0fe; color: #1a4fa3; font-size: 0.78rem;
+}
+.chip-off { background: #eef0f3; color: #555f6d; }
+.card > .form-actions { margin-top: 14px; }
+.add-model { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
+.add-model h3 { margin: 0 0 10px; font-size: 0.95rem; }
+.add-model-fields { display: grid; grid-template-columns: minmax(200px, 2fr) minmax(160px, 1fr) auto; gap: 12px; align-items: end; }
+.field-action { display: flex; }
+@media (max-width: 640px) {
+  .add-model-fields { grid-template-columns: 1fr; }
+  .topbar { flex-wrap: wrap; gap: 10px; padding: 12px 16px; }
+}

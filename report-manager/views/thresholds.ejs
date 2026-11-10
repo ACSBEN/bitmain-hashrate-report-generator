@@ -1,0 +1,128 @@
+<%- include('partials/header') %>
+<% const val = (v) => (v === null || v === undefined ? '' : v); %>
+<div class="page-head">
+  <h1>Thresholds</h1>
+</div>
+<% if (saved) { %><div class="notice">Thresholds saved. Reports use the new settings immediately.</div><% } %>
+<%- include('partials/error-summary', { errors }) %>
+
+<form class="card" method="post" action="/settings/thresholds" novalidate>
+  <div class="card-head">
+    <div>
+      <h2>Global checks</h2>
+      <p class="muted small">
+        Apply to every model unless a model overrides them. Temperatures are flagged when they go <em>above</em>
+        a limit. Hashrate is flagged when it drops <em>below</em> a percent of the model's expected hashrate.
+        A disabled check still shows its value on reports but never flags it.
+      </p>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table class="settings">
+      <thead>
+        <tr><th>Check</th><th>Applies to</th><th class="center">Enabled</th><th>Warn</th><th>Fail</th></tr>
+      </thead>
+      <tbody>
+        <% for (const metric of metrics) {
+             const row = form[metric.key] || {};
+             const on = row.enabled !== false;
+             const warnErr = errors[`default.${metric.key}.warn`];
+             const failErr = errors[`default.${metric.key}.fail`]; %>
+          <tr class="metric-row<%= on ? '' : ' row-off' %>">
+            <th scope="row"><%= metric.label %></th>
+            <td class="muted"><%= metric.group %></td>
+            <td class="center">
+              <input type="checkbox" class="toggle" name="default[<%= metric.key %>][enabled]" value="on"
+                     aria-label="Enable <%= metric.label %> check" <%= on ? 'checked' : '' %>>
+            </td>
+            <% for (const [part, err] of [['warn', warnErr], ['fail', failErr]]) { %>
+              <td class="<%= err ? 'has-error' : '' %>">
+                <span class="with-unit">
+                  <input type="number" step="any" name="default[<%= metric.key %>][<%= part %>]"
+                         value="<%= val(row[part]) %>" aria-label="<%= metric.label %> <%= part %> limit">
+                  <span class="unit"><%= metric.kind === 'minPct' ? '%' : metric.unit %></span>
+                </span>
+              </td>
+            <% } %>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+  <div class="form-actions">
+    <button class="btn btn-primary" type="submit">Save Global Checks</button>
+  </div>
+</form>
+
+<section class="card" id="models">
+  <div class="card-head">
+    <div>
+      <h2>Models</h2>
+      <p class="muted small">
+        The expected hashrate is used for the hashrate check. Each hashboard is expected to produce a third of it.
+        Report models are matched by name, ignoring case. If a model isn't listed here, its hashrate is not checked.
+      </p>
+    </div>
+  </div>
+  <% if (models.length) { %>
+    <div class="table-wrap">
+      <table class="settings">
+        <thead><tr><th>Model</th><th class="num">Expected</th><th>Overrides</th><th></th></tr></thead>
+        <tbody>
+          <% for (const model of models) { %>
+            <tr>
+              <th scope="row"><a href="<%= model.url %>/edit"><%= model.name %></a></th>
+              <td class="num"><%= model.entry.expectedHashrateTHs === undefined ? '—' : `${model.entry.expectedHashrateTHs} TH/s` %></td>
+              <td>
+                <% if (!model.off.length && !model.custom.length) { %><span class="muted">Uses global checks</span><% } %>
+                <% for (const label of model.custom) { %><span class="chip">Custom: <%= label %></span><% } %>
+                <% for (const label of model.off) { %><span class="chip chip-off">Off: <%= label %></span><% } %>
+              </td>
+              <td>
+                <div class="row-actions">
+                  <a class="btn btn-small" href="<%= model.url %>/edit">Edit</a>
+                  <form method="post" action="<%= model.url %>/delete"
+                        onsubmit="return confirm('Delete threshold settings for this model?')">
+                    <button class="btn btn-small btn-danger" type="submit">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  <% } else { %>
+    <p class="muted">No models yet.</p>
+  <% } %>
+
+  <form class="add-model" method="post" action="/settings/thresholds/models" novalidate>
+    <h3>Add model</h3>
+    <%- include('partials/error-summary', { errors: addErrors }) %>
+    <div class="add-model-fields">
+      <div class="field<%= addErrors.name ? ' has-error' : '' %>">
+        <label for="add-name">Model name</label>
+        <input id="add-name" name="name" type="text" maxlength="200" placeholder="e.g. Antminer S21 Hyd"
+               value="<%= val(addForm.name) %>" autocomplete="off">
+      </div>
+      <div class="field<%= addErrors.expectedHashrateTHs ? ' has-error' : '' %>">
+        <label for="add-expected">Expected hashrate</label>
+        <span class="with-unit">
+          <input id="add-expected" name="expectedHashrateTHs" type="number" step="any" min="0"
+                 value="<%= val(addForm.expectedHashrateTHs) %>">
+          <span class="unit">TH/s</span>
+        </span>
+      </div>
+      <div class="field field-action">
+        <button class="btn btn-primary" type="submit">Add Model</button>
+      </div>
+    </div>
+  </form>
+</section>
+
+<script>
+  for (const box of document.querySelectorAll('.metric-row .toggle')) {
+    box.addEventListener('change', () => box.closest('tr').classList.toggle('row-off', !box.checked));
+  }
+</script>
+<%- include('partials/footer') %>

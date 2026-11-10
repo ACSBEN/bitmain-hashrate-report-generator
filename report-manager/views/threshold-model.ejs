@@ -1,0 +1,83 @@
+<%- include('partials/header') %>
+<% const val = (v) => (v === null || v === undefined ? '' : v); %>
+<div class="page-head">
+  <h1><%= title %></h1>
+  <a class="btn btn-ghost" href="/settings/thresholds">Cancel</a>
+</div>
+<%- include('partials/error-summary', { errors }) %>
+
+<form method="post" action="<%= action %>" novalidate>
+  <fieldset class="card">
+    <legend>Model</legend>
+    <div class="grid grid-3">
+      <div class="field<%= errors.name ? ' has-error' : '' %>">
+        <label for="name">Model name <span class="req">*</span></label>
+        <input id="name" name="name" type="text" maxlength="200" value="<%= val(form.name) %>" autocomplete="off">
+        <% if (errors.name) { %><div class="error-text"><%= errors.name %></div><% } %>
+      </div>
+      <div class="field<%= errors.expectedHashrateTHs ? ' has-error' : '' %>">
+        <label for="expectedHashrateTHs">Expected hashrate</label>
+        <span class="with-unit">
+          <input id="expectedHashrateTHs" name="expectedHashrateTHs" type="number" step="any" min="0"
+                 value="<%= val(form.expectedHashrateTHs) %>">
+          <span class="unit">TH/s</span>
+        </span>
+        <% if (errors.expectedHashrateTHs) { %><div class="error-text"><%= errors.expectedHashrateTHs %></div><% } %>
+      </div>
+    </div>
+  </fieldset>
+
+  <section class="card">
+    <h2>Checks for this model</h2>
+    <p class="muted small">
+      <strong>Use global</strong> follows the Global checks setting. <strong>Custom</strong> turns the check on with
+      this model's own limits, even if it is off globally. <strong>Disabled</strong> turns the check off for this
+      model only.
+    </p>
+    <div class="table-wrap">
+      <table class="settings">
+        <thead><tr><th>Check</th><th>Global setting</th><th>For this model</th><th>Warn</th><th>Fail</th></tr></thead>
+        <tbody>
+          <% for (const metric of metrics) {
+               const row = (form.metrics && form.metrics[metric.key]) || {};
+               const mode = modes.includes(row.mode) ? row.mode : 'inherit'; %>
+            <tr class="override-row" data-mode="<%= mode %>">
+              <th scope="row"><%= metric.label %></th>
+              <td class="muted small"><%- include('partials/threshold-rule', { metric, limit: defaults[metric.key] }) %></td>
+              <td>
+                <select name="metrics[<%= metric.key %>][mode]" class="mode" aria-label="<%= metric.label %> setting">
+                  <option value="inherit" <%= mode === 'inherit' ? 'selected' : '' %>>Use global</option>
+                  <option value="custom" <%= mode === 'custom' ? 'selected' : '' %>>Custom</option>
+                  <option value="off" <%= mode === 'off' ? 'selected' : '' %>>Disabled</option>
+                </select>
+              </td>
+              <% for (const part of ['warn', 'fail']) { const err = errors[`${metric.key}.${part}`]; %>
+                <td class="limit<%= err ? ' has-error' : '' %>">
+                  <span class="with-unit">
+                    <input type="number" step="any" name="metrics[<%= metric.key %>][<%= part %>]"
+                           value="<%= val(row[part]) %>" aria-label="<%= metric.label %> <%= part %> limit">
+                    <span class="unit"><%= metric.kind === 'minPct' ? '%' : metric.unit %></span>
+                  </span>
+                </td>
+              <% } %>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="form-actions">
+    <button class="btn btn-primary" type="submit">Save Model</button>
+    <a class="btn btn-ghost" href="/settings/thresholds">Cancel</a>
+  </div>
+</form>
+
+<script>
+  // Limits only matter for Custom; hide them otherwise. Without JS they stay visible.
+  document.documentElement.classList.add('js');
+  for (const select of document.querySelectorAll('.override-row .mode')) {
+    select.addEventListener('change', () => { select.closest('tr').dataset.mode = select.value; });
+  }
+</script>
+<%- include('partials/footer') %>

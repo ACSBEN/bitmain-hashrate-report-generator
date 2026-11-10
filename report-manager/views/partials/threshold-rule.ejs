@@ -1,0 +1,10 @@
+<%
+  // Args: metric, limit. Renders the rule a limit applies, e.g. "warn > 85 · fail > 95 °C".
+  const on = limit && limit.enabled !== false;
+  const has = (v) => v !== null && v !== undefined && v !== '';
+%>
+<% if (!on) { %><span class="rule-off">Off</span><% } else if (metric.kind === 'minPct') { %>
+warn &lt; <%= has(limit.warn) ? limit.warn : '?' %>% · fail &lt; <%= has(limit.fail) ? limit.fail : '?' %>% of expected
+<% } else { %>
+warn &gt; <%= has(limit.warn) ? limit.warn : '?' %> · fail &gt; <%= has(limit.fail) ? limit.fail : '?' %> <%= metric.unit %>
+<% } %>

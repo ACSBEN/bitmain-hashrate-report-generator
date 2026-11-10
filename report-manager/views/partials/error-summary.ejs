@@ -1,0 +1,6 @@
+<% const errorList = Object.values(errors); if (errorList.length) { %>
+  <div class="notice notice-error" role="alert">
+    <strong>Please fix <%= errorList.length %> problem<%= errorList.length === 1 ? '' : 's' %>:</strong>
+    <ul><% for (const msg of errorList) { %><li><%= msg %></li><% } %></ul>
+  </div>
+<% } %>

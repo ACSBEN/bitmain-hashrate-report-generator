@@ -6,7 +6,7 @@ A locally hosted tool for recording miner diagnostics and producing printable pe
 |---|---|
 | `report-manager/` | Node.js (Express + EJS) web app to create, view, edit, print and download reports |
 | `miner-collector/` | *(planned)* Pulls live data from miners and writes report files |
-| `docs/` | [Data schema](docs/report-schema.md) and [project plan](docs/plan.md) |
+| `docs/` | [Data schema](docs/report-schema.md) and project plans ([initial](docs/plan.md), [thresholds](docs/plan-thresholds.md)) |
 
 ## Quick start
 
@@ -27,6 +27,10 @@ Other scripts: `npm run dev` restarts on file changes, and `npm test` runs the t
 - **Report page**: values outside the thresholds are highlighted WARN or FAIL, and the report gets an overall status.
 - **Print**: the Print button opens the browser print dialog, and the print layout fits on one page. To get a PDF, choose "Save as PDF".
 - **Download HTML** saves a self-contained copy you can share. **Download JSON** saves the raw data.
-- Tune the limits and expected hashrates in `report-manager/config/thresholds.json`. Changes apply without a restart.
+- **Thresholds** page:
+  - Switch each check on or off and set its warn/fail limits.
+  - Manage models and their expected hashrates.
+  - Override or disable individual checks for one model.
+  - Changes apply immediately. The settings are stored in `report-manager/config/thresholds.json`. See [the schema doc](docs/report-schema.md#thresholds) for the format.
 
 Reports are stored as JSON files in `report-manager/data/reports/`, which is gitignored.

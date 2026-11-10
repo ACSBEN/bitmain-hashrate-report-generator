@@ -1,19 +1,11 @@
 <%- include('partials/header') %>
-<%
-  const boards = form.hashboards;
-  const errorList = Object.values(errors);
-%>
+<% const boards = form.hashboards; %>
 <div class="page-head">
   <h1><%= title %></h1>
   <a class="btn btn-ghost" href="<%= report ? `/reports/${report.id}` : '/' %>">Cancel</a>
 </div>
 
-<% if (errorList.length) { %>
-  <div class="notice notice-error" role="alert">
-    <strong>Please fix <%= errorList.length %> problem<%= errorList.length === 1 ? '' : 's' %>:</strong>
-    <ul><% for (const msg of errorList) { %><li><%= msg %></li><% } %></ul>
-  </div>
-<% } %>
+<%- include('partials/error-summary', { errors }) %>
 
 <form class="report-form" method="post" action="<%= report ? `/reports/${report.id}` : '/reports' %>" novalidate>
   <fieldset class="card">
