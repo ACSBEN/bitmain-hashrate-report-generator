@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "reportDate": "2026-11-05",
+  "source": "manual",
+  "notes": "Board 3 running hot with low hashrate. Check heatsink contact and fan airflow.",
+  "miner": {
+    "serialNumber": "SMTTDCBBCJCBH0377",
+    "model": "Antminer S19j Pro",
+    "firmwareVersion": "2023-07-04 (Bitmain)",
+    "hashrateTHs": 91.8,
+    "runTimeSeconds": 67200
+  },
+  "hashboards": [
+    {
+      "slot": 0,
+      "serialNumber": "KAZZB0TB3112E0101",
+      "model": "BHB42601",
+      "hashrateTHs": 33.9,
+      "avgPcbTempC": 66,
+      "pcbTempDeltaC": 8,
+      "avgChipTempC": 80,
+      "chipTempDeltaC": 9
+    },
+    {
+      "slot": 1,
+      "serialNumber": "KAZZB0TB3112E0102",
+      "model": "BHB42601",
+      "hashrateTHs": 33.1,
+      "avgPcbTempC": 70,
+      "pcbTempDeltaC": 11,
+      "avgChipTempC": 84,
+      "chipTempDeltaC": 11
+    },
+    {
+      "slot": 2,
+      "serialNumber": "KAZZB0TB3112E0103",
+      "model": "BHB42601",
+      "hashrateTHs": 24.8,
+      "avgPcbTempC": 87,
+      "pcbTempDeltaC": 16,
+      "avgChipTempC": 97,
+      "chipTempDeltaC": 17
+    }
+  ],
+  "psu": {
+    "pfcTempC": 71,
+    "avgLlcTempC": 82,
+    "llcTempDeltaC": 6
+  },
+  "id": "6f1c2a3e-1b2c-4d5e-8f90-0a1b2c3d4e02",
+  "createdAt": "2026-11-10T03:21:30.670Z",
+  "updatedAt": "2026-11-10T03:21:30.670Z"
+}

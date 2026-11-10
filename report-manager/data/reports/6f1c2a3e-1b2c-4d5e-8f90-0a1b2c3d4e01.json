@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "reportDate": "2026-11-02",
+  "source": "manual",
+  "notes": "Healthy unit. Passed 24h burn-in.",
+  "miner": {
+    "serialNumber": "YNAHD6BBDJJBA0142",
+    "model": "Antminer S21",
+    "firmwareVersion": "2024-09-12 (Bitmain)",
+    "hashrateTHs": 201.4,
+    "runTimeSeconds": 274320
+  },
+  "hashboards": [
+    {
+      "slot": 0,
+      "serialNumber": "JYZZB1AB4206A0011",
+      "model": "BHB68601",
+      "hashrateTHs": 67.3,
+      "avgPcbTempC": 58,
+      "pcbTempDeltaC": 4,
+      "avgChipTempC": 71,
+      "chipTempDeltaC": 5
+    },
+    {
+      "slot": 1,
+      "serialNumber": "JYZZB1AB4206A0012",
+      "model": "BHB68601",
+      "hashrateTHs": 66.9,
+      "avgPcbTempC": 59,
+      "pcbTempDeltaC": 5,
+      "avgChipTempC": 72,
+      "chipTempDeltaC": 6
+    },
+    {
+      "slot": 2,
+      "serialNumber": "JYZZB1AB4206A0013",
+      "model": "BHB68601",
+      "hashrateTHs": 67.2,
+      "avgPcbTempC": 58,
+      "pcbTempDeltaC": 4,
+      "avgChipTempC": 70,
+      "chipTempDeltaC": 5
+    }
+  ],
+  "psu": {
+    "pfcTempC": 52,
+    "avgLlcTempC": 55,
+    "llcTempDeltaC": 3
+  },
+  "id": "6f1c2a3e-1b2c-4d5e-8f90-0a1b2c3d4e01",
+  "createdAt": "2026-11-10T03:21:30.667Z",
+  "updatedAt": "2026-11-10T03:21:30.667Z"
+}

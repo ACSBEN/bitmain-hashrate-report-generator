@@ -33,4 +33,4 @@ Other scripts: `npm run dev` restarts on file changes, and `npm test` runs the t
   - Override or disable individual checks for one model.
   - Changes apply immediately. The settings are stored in `report-manager/config/thresholds.json`. See [the schema doc](docs/report-schema.md#thresholds) for the format.
 
-Reports are stored as JSON files in `report-manager/data/reports/`, which is gitignored.
+Reports are stored as JSON files in `report-manager/data/reports/` and are tracked in git.

@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "reportDate": "2026-11-08",
+  "source": "manual",
+  "notes": "Model not in threshold config yet; hashrate is not flagged. PSU LLC temps not recorded.",
+  "miner": {
+    "serialNumber": "HTM3X0001ABC",
+    "model": "Antminer S23",
+    "firmwareVersion": "",
+    "hashrateTHs": 310,
+    "runTimeSeconds": null
+  },
+  "hashboards": [
+    {
+      "slot": 0,
+      "serialNumber": "",
+      "model": "",
+      "hashrateTHs": 103.2,
+      "avgPcbTempC": 60,
+      "pcbTempDeltaC": 5,
+      "avgChipTempC": 74,
+      "chipTempDeltaC": 6
+    },
+    {
+      "slot": 1,
+      "serialNumber": "",
+      "model": "",
+      "hashrateTHs": 103.5,
+      "avgPcbTempC": 61,
+      "pcbTempDeltaC": 5,
+      "avgChipTempC": 75,
+      "chipTempDeltaC": 6
+    },
+    {
+      "slot": 2,
+      "serialNumber": "",
+      "model": "",
+      "hashrateTHs": 103.3,
+      "avgPcbTempC": 60,
+      "pcbTempDeltaC": 4,
+      "avgChipTempC": 74,
+      "chipTempDeltaC": 5
+    }
+  ],
+  "psu": {
+    "pfcTempC": 58,
+    "avgLlcTempC": null,
+    "llcTempDeltaC": null
+  },
+  "id": "6f1c2a3e-1b2c-4d5e-8f90-0a1b2c3d4e03",
+  "createdAt": "2026-11-10T03:21:30.670Z",
+  "updatedAt": "2026-11-10T03:21:30.670Z"
+}

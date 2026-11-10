@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "reportDate": "2026-11-09",
+  "source": "manual",
+  "notes": "Unit Tested on Stock Firmware. Some Data only available on VNISH.",
+  "miner": {
+    "serialNumber": "HKYQATDBDJABI0AS4",
+    "model": "S21 195T",
+    "firmwareVersion": "Feb 2 2024 (BITMAIN)",
+    "hashrateTHs": 194.3,
+    "expectedHashrateTHs": 195,
+    "runTimeSeconds": 1020
+  },
+  "hashboards": [
+    {
+      "slot": 0,
+      "serialNumber": "",
+      "model": "BHB68603",
+      "hashrateTHs": 67.8,
+      "avgPcbTempC": 64.5,
+      "pcbTempDeltaC": 19,
+      "avgChipTempC": null,
+      "chipTempDeltaC": null
+    },
+    {
+      "slot": 1,
+      "serialNumber": "",
+      "model": "BHB68603",
+      "hashrateTHs": 64.8,
+      "avgPcbTempC": 61.5,
+      "pcbTempDeltaC": 15,
+      "avgChipTempC": null,
+      "chipTempDeltaC": null
+    },
+    {
+      "slot": 2,
+      "serialNumber": "",
+      "model": "BHB68603",
+      "hashrateTHs": 63.6,
+      "avgPcbTempC": 61.5,
+      "pcbTempDeltaC": 17,
+      "avgChipTempC": null,
+      "chipTempDeltaC": null
+    }
+  ],
+  "psu": {
+    "pfcTempC": null,
+    "avgLlcTempC": null,
+    "llcTempDeltaC": null
+  },
+  "id": "c8e0ee2c-74b3-401b-a65f-16f9926962df",
+  "createdAt": "2026-11-10T03:51:16.595Z",
+  "updatedAt": "2026-11-10T03:51:16.595Z"
+}
