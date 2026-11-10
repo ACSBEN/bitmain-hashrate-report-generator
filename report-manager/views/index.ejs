@@ -1,0 +1,51 @@
+<%- include('partials/header') %>
+<div class="page-head">
+  <h1>Reports</h1>
+  <form class="filters" method="get" action="/">
+    <input type="search" name="q" value="<%= q %>" placeholder="Search serial, model, firmware…" aria-label="Search">
+    <select name="status" aria-label="Status">
+      <option value="">All statuses</option>
+      <% for (const s of ['pass', 'warn', 'fail']) { %>
+        <option value="<%= s %>" <%= status === s ? 'selected' : '' %>><%= s.toUpperCase() %></option>
+      <% } %>
+    </select>
+    <button class="btn" type="submit">Filter</button>
+    <% if (q || status) { %><a class="btn btn-ghost" href="/">Clear</a><% } %>
+  </form>
+</div>
+
+<% if (total === 0) { %>
+  <div class="card empty">
+    <h2>No reports yet</h2>
+    <p>Create one by hand, or run <code>npm run seed</code> to load sample data.</p>
+    <p><a class="btn btn-primary" href="/reports/new">+ New Report</a></p>
+  </div>
+<% } else if (rows.length === 0) { %>
+  <div class="card empty"><p>No reports match your filter.</p></div>
+<% } else { %>
+  <div class="card table-wrap">
+    <table class="list">
+      <thead>
+        <tr>
+          <th>Status</th><th>Serial Number</th><th>Model</th><th>Firmware</th>
+          <th class="num">Hashrate</th><th>Report Date</th><th>Updated</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (const { report, evaluation } of rows) { %>
+          <tr>
+            <td><%- include('partials/status-badge', { status: evaluation.overall }) %></td>
+            <td><a href="/reports/<%= report.id %>"><strong><%= report.miner.serialNumber %></strong></a></td>
+            <td><%= report.miner.model %></td>
+            <td><%= format.formatValue({ type: 'text' }, report.miner.firmwareVersion) %></td>
+            <td class="num"><%= format.formatValue({ type: 'number', unit: 'TH/s' }, report.miner.hashrateTHs) %></td>
+            <td><%= format.formatDate(report.reportDate) %></td>
+            <td class="muted"><%= format.formatDateTime(report.updatedAt) %></td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+  <p class="muted small">Showing <%= rows.length %> of <%= total %> report<%= total === 1 ? '' : 's' %>.</p>
+<% } %>
+<%- include('partials/footer') %>

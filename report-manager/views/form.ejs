@@ -1,0 +1,81 @@
+<%- include('partials/header') %>
+<%
+  const boards = form.hashboards;
+  const errorList = Object.values(errors);
+%>
+<div class="page-head">
+  <h1><%= title %></h1>
+  <a class="btn btn-ghost" href="<%= report ? `/reports/${report.id}` : '/' %>">Cancel</a>
+</div>
+
+<% if (errorList.length) { %>
+  <div class="notice notice-error" role="alert">
+    <strong>Please fix <%= errorList.length %> problem<%= errorList.length === 1 ? '' : 's' %>:</strong>
+    <ul><% for (const msg of errorList) { %><li><%= msg %></li><% } %></ul>
+  </div>
+<% } %>
+
+<form class="report-form" method="post" action="<%= report ? `/reports/${report.id}` : '/reports' %>" novalidate>
+  <fieldset class="card">
+    <legend>Report</legend>
+    <div class="grid grid-3">
+      <div class="field<%= errors.reportDate ? ' has-error' : '' %>">
+        <label for="reportDate">Report Date</label>
+        <input id="reportDate" name="reportDate" type="date" value="<%= form.reportDate || '' %>">
+        <% if (errors.reportDate) { %><div class="error-text"><%= errors.reportDate %></div><% } %>
+      </div>
+      <div class="field">
+        <label for="source">Source</label>
+        <select id="source" name="source">
+          <% for (const s of schema.SOURCES) { %>
+            <option value="<%= s %>" <%= (form.source || 'manual') === s ? 'selected' : '' %>><%= s %></option>
+          <% } %>
+        </select>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="card">
+    <legend>Miner</legend>
+    <div class="grid grid-3">
+      <% for (const field of schema.MINER_FIELDS) { %>
+        <%- include('partials/field', { field, name: `miner[${field.key}]`, path: `miner.${field.key}`, values: form.miner, errors }) %>
+      <% } %>
+    </div>
+  </fieldset>
+
+  <div class="grid grid-3 boards">
+    <% for (let slot = 0; slot < schema.HASHBOARD_COUNT; slot++) { %>
+      <fieldset class="card">
+        <legend>Hashboard <%= slot + 1 %></legend>
+        <input type="hidden" name="hashboards[<%= slot %>][slot]" value="<%= slot %>">
+        <% for (const field of schema.HASHBOARD_FIELDS) { %>
+          <%- include('partials/field', { field, name: `hashboards[${slot}][${field.key}]`, path: `hashboards.${slot}.${field.key}`, values: boards[slot], errors }) %>
+        <% } %>
+      </fieldset>
+    <% } %>
+  </div>
+
+  <fieldset class="card">
+    <legend>Power Supply</legend>
+    <div class="grid grid-3">
+      <% for (const field of schema.PSU_FIELDS) { %>
+        <%- include('partials/field', { field, name: `psu[${field.key}]`, path: `psu.${field.key}`, values: form.psu, errors }) %>
+      <% } %>
+    </div>
+  </fieldset>
+
+  <fieldset class="card">
+    <legend>Notes</legend>
+    <div class="field<%= errors.notes ? ' has-error' : '' %>">
+      <textarea id="notes" name="notes" rows="4" maxlength="5000" aria-label="Notes"><%= form.notes || '' %></textarea>
+      <% if (errors.notes) { %><div class="error-text"><%= errors.notes %></div><% } %>
+    </div>
+  </fieldset>
+
+  <div class="form-actions">
+    <button class="btn btn-primary" type="submit">Save Report</button>
+    <a class="btn btn-ghost" href="<%= report ? `/reports/${report.id}` : '/' %>">Cancel</a>
+  </div>
+</form>
+<%- include('partials/footer') %>

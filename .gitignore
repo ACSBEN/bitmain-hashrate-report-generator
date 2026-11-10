@@ -1,0 +1,5 @@
+node_modules/
+report-manager/data/reports/*
+!report-manager/data/reports/.gitkeep
+*.tmp
+.DS_Store

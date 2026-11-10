@@ -1,0 +1,85 @@
+<%
+  const cell = (path) => evaluation.fields[path] || { status: 'na' };
+  const flag = (st) => (st === 'warn' || st === 'fail') ? `<span class="flag">${st.toUpperCase()}</span>` : '';
+%>
+<article class="report">
+  <header class="report-header">
+    <div>
+      <div class="report-kicker">Miner Diagnostic Report</div>
+      <h1 class="report-title"><%= report.miner.serialNumber %></h1>
+      <div class="report-sub"><%= report.miner.model %> · <%= format.formatDate(report.reportDate) %></div>
+    </div>
+    <div class="report-status">
+      <div class="report-status-label">Overall</div>
+      <%- include('status-badge', { status: evaluation.overall }) %>
+    </div>
+  </header>
+
+  <section class="report-section">
+    <h2>Miner</h2>
+    <dl class="kv-grid">
+      <% for (const field of schema.MINER_FIELDS) { const c = cell(`miner.${field.key}`); %>
+        <div class="kv st-<%= c.status %>" <% if (c.detail) { %>title="<%= c.detail %>"<% } %>>
+          <dt><%= field.label %></dt>
+          <dd><%= format.formatValue(field, report.miner[field.key]) %> <%- flag(c.status) %></dd>
+          <% if (c.detail) { %><dd class="detail"><%= c.detail %></dd><% } %>
+        </div>
+      <% } %>
+      <div class="kv">
+        <dt>Expected Hashrate</dt>
+        <dd><%= evaluation.expectedHashrateTHs === null ? 'Model not configured' : format.formatValue({ type: 'number', unit: 'TH/s' }, evaluation.expectedHashrateTHs) %></dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="report-section">
+    <h2>Hashboards</h2>
+    <table class="data">
+      <thead>
+        <tr>
+          <th></th>
+          <% for (const board of report.hashboards) { %><th class="num">Board <%= board.slot + 1 %></th><% } %>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (const field of schema.HASHBOARD_FIELDS) { %>
+          <tr>
+            <th scope="row"><%= field.label %></th>
+            <% for (const board of report.hashboards) { const c = cell(`hashboards.${board.slot}.${field.key}`); %>
+              <td class="num st-<%= c.status %>" <% if (c.detail) { %>title="<%= c.detail %>"<% } %>>
+                <%= format.formatValue(field, board[field.key]) %> <%- flag(c.status) %>
+              </td>
+            <% } %>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="report-section">
+    <h2>Power Supply</h2>
+    <dl class="kv-grid">
+      <% for (const field of schema.PSU_FIELDS) { const c = cell(`psu.${field.key}`); %>
+        <div class="kv st-<%= c.status %>" <% if (c.detail) { %>title="<%= c.detail %>"<% } %>>
+          <dt><%= field.label %></dt>
+          <dd><%= format.formatValue(field, report.psu[field.key]) %> <%- flag(c.status) %></dd>
+          <% if (c.detail) { %><dd class="detail"><%= c.detail %></dd><% } %>
+        </div>
+      <% } %>
+    </dl>
+  </section>
+
+  <% if (report.notes && report.notes.trim()) { %>
+    <section class="report-section">
+      <h2>Notes</h2>
+      <div class="notes"><%= report.notes %></div>
+    </section>
+  <% } %>
+
+  <footer class="report-footer">
+    <span>Report ID <code><%= report.id %></code></span>
+    <span>Source: <%= report.source %></span>
+    <span>Created <%= format.formatDateTime(report.createdAt) %></span>
+    <span>Updated <%= format.formatDateTime(report.updatedAt) %></span>
+  </footer>
+</article>

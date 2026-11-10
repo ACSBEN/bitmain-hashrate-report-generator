@@ -1,0 +1,17 @@
+<%- include('partials/header') %>
+<div class="page-head no-print">
+  <a class="btn btn-ghost" href="/">← All reports</a>
+  <div class="actions">
+    <button class="btn btn-primary" type="button" onclick="window.print()">Print</button>
+    <a class="btn" href="/reports/<%= report.id %>/edit">Edit</a>
+    <a class="btn" href="/reports/<%= report.id %>/download.html">Download HTML</a>
+    <a class="btn" href="/reports/<%= report.id %>/download.json">Download JSON</a>
+    <form method="post" action="/reports/<%= report.id %>/delete"
+          onsubmit="return confirm('Delete this report permanently?')">
+      <button class="btn btn-danger" type="submit">Delete</button>
+    </form>
+  </div>
+</div>
+<% if (saved) { %><div class="notice no-print">Report saved.</div><% } %>
+<%- include('partials/report-body') %>
+<%- include('partials/footer') %>

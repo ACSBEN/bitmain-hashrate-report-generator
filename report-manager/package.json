@@ -1,0 +1,21 @@
+{
+  "name": "bitmain-report-manager",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local web app for tracking miner diagnostics and generating printable hashrate reports",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test",
+    "seed": "node scripts/seed.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.3.0"
+  }
+}

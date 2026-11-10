@@ -1,0 +1,34 @@
+<%
+  // Args: field (schema entry), name (form name), path (error key), values (section object), errors
+  const id = name.replace(/[\[\]]+/g, '-').replace(/-$/, '');
+  const error = errors[path];
+  const raw = values ? values[field.type === 'duration' ? 'runTime' : field.key] : undefined;
+  const val = (v) => (v === null || v === undefined ? '' : v);
+%>
+<div class="field<%= error ? ' has-error' : '' %>">
+  <% if (field.type === 'duration') { const parts = raw && typeof raw === 'object' ? raw : {}; %>
+    <label for="<%= id %>-days"><%= field.label %></label>
+    <div class="duration">
+      <% for (const [unit, label] of [['days', 'd'], ['hours', 'h'], ['minutes', 'm']]) { %>
+        <span class="with-unit">
+          <input id="<%= id %>-<%= unit %>" type="number" min="0" step="1" inputmode="numeric"
+                 name="miner[runTime][<%= unit %>]" value="<%= val(parts[unit]) %>" aria-label="<%= unit %>">
+          <span class="unit"><%= label %></span>
+        </span>
+      <% } %>
+    </div>
+  <% } else { %>
+    <label for="<%= id %>"><%= field.label %><% if (field.required) { %> <span class="req">*</span><% } %></label>
+    <% if (field.type === 'number') { %>
+      <span class="with-unit">
+        <input id="<%= id %>" name="<%= name %>" type="number" step="any" inputmode="decimal"
+               <% if (field.min !== undefined) { %>min="<%= field.min %>"<% } %> value="<%= val(raw) %>">
+        <span class="unit"><%= field.unit %></span>
+      </span>
+    <% } else { %>
+      <input id="<%= id %>" name="<%= name %>" type="text" maxlength="200" value="<%= val(raw) %>"
+             <%= field.required ? 'required' : '' %> autocomplete="off">
+    <% } %>
+  <% } %>
+  <% if (error) { %><div class="error-text"><%= error %></div><% } %>
+</div>

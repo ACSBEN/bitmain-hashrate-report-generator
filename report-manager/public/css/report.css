@@ -1,0 +1,99 @@
+/* Report styles. Also inlined into the standalone HTML download, so this file
+   must not depend on app.css. */
+.report {
+  --r-text: #1b2430;
+  --r-muted: #667085;
+  --r-border: #dde2ea;
+  --r-head: #f6f8fb;
+  --ok-bg: transparent;
+  --warn-bg: #fff4d6;
+  --warn-text: #8a5a00;
+  --fail-bg: #fde4e4;
+  --fail-text: #a11b1b;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--r-text);
+  background: #fff;
+  border: 1px solid var(--r-border);
+  border-radius: 8px;
+  padding: 28px 32px;
+  line-height: 1.4;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+body.standalone { margin: 0; padding: 24px 16px; background: #f3f5f8; }
+body.standalone .report { max-width: 1000px; margin: 0 auto; }
+
+.report-header {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
+  border-bottom: 3px solid var(--r-text); padding-bottom: 14px; margin-bottom: 20px;
+}
+.report-kicker { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--r-muted); }
+.report-title { margin: 2px 0 2px; font-size: 1.7rem; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; word-break: break-all; }
+.report-sub { color: var(--r-muted); }
+.report-status { text-align: right; }
+.report-status-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--r-muted); margin-bottom: 4px; }
+.report-status .badge { font-size: 1.1rem; padding: 6px 16px; }
+
+.badge {
+  display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 0.75rem;
+  font-weight: 700; letter-spacing: 0.05em; border: 1px solid transparent;
+}
+.badge-pass { background: #e3f4e5; color: #1e6b28; border-color: #b9dfbd; }
+.badge-warn { background: #fff4d6; color: #8a5a00; border-color: #f2d58a; }
+.badge-fail { background: #fde4e4; color: #a11b1b; border-color: #f2b8b8; }
+
+.report-section { margin-bottom: 22px; break-inside: avoid; page-break-inside: avoid; }
+.report-section h2 {
+  font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em;
+  margin: 0 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--r-border);
+}
+
+.kv-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px; margin: 0;
+}
+.kv { border: 1px solid var(--r-border); border-radius: 6px; padding: 8px 12px; }
+.kv dt { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--r-muted); }
+.kv dd { margin: 2px 0 0; font-weight: 600; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.kv dd.detail { font-weight: 400; font-size: 0.75rem; color: var(--r-muted); }
+
+table.data { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+table.data th, table.data td { border: 1px solid var(--r-border); padding: 7px 10px; }
+table.data thead th { background: var(--r-head); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; }
+table.data tbody th { text-align: left; font-weight: 600; background: var(--r-head); width: 28%; }
+table.data .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+.st-warn { background: var(--warn-bg); color: var(--warn-text); }
+.st-fail { background: var(--fail-bg); color: var(--fail-text); }
+.st-warn dt, .st-fail dt, .st-warn .detail, .st-fail .detail { color: inherit; }
+.kv.st-warn { border-color: #f2d58a; }
+.kv.st-fail { border-color: #f2b8b8; }
+/* Text marker so flags survive black-and-white printing. */
+.flag {
+  display: inline-block; margin-left: 4px; font-size: 0.65rem; font-weight: 700;
+  letter-spacing: 0.05em; border: 1px solid currentColor; border-radius: 3px; padding: 0 3px;
+  vertical-align: middle;
+}
+
+.notes { white-space: pre-wrap; border: 1px solid var(--r-border); border-radius: 6px; padding: 10px 12px; }
+
+.report-footer {
+  display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 8px; padding-top: 10px;
+  border-top: 1px solid var(--r-border); font-size: 0.75rem; color: var(--r-muted);
+}
+
+@media (max-width: 600px) {
+  .report { padding: 18px 16px; }
+  .report-header { flex-direction: column; }
+  .report-status { text-align: left; }
+  table.data { font-size: 0.82rem; }
+  table.data th, table.data td { padding: 6px; }
+}
+
+@page { size: auto; margin: 12mm; }
+@media print {
+  body.standalone { background: #fff; padding: 0; }
+  .report { border: 0; border-radius: 0; padding: 0; max-width: none; font-size: 11pt; }
+  .report-section { margin-bottom: 14px; }
+  .kv-grid { grid-template-columns: repeat(3, 1fr); }
+}
