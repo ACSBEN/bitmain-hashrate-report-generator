@@ -12,6 +12,10 @@ const MINER_FIELDS = [
   { key: 'model', label: 'Model', type: 'text', required: true },
   { key: 'firmwareVersion', label: 'Firmware Version', type: 'text' },
   { key: 'hashrateTHs', label: 'Hashrate', unit: 'TH/s', type: 'number', min: 0 },
+  {
+    key: 'expectedHashrateTHs', label: 'Expected Hashrate', unit: 'TH/s', type: 'number', positive: true,
+    hint: 'Leave blank to use the model setting from Thresholds',
+  },
   { key: 'runTimeSeconds', label: 'Run Time', type: 'duration', min: 0 },
 ];
 
@@ -59,6 +63,10 @@ function normalizeNumber(raw, field, path, errors) {
   const num = typeof raw === 'number' ? raw : Number(String(raw).trim());
   if (!Number.isFinite(num)) {
     errors[path] = `${field.label} must be a number`;
+    return null;
+  }
+  if (field.positive && num <= 0) {
+    errors[path] = `${field.label} must be greater than 0`;
     return null;
   }
   if (field.min !== undefined && num < field.min) {

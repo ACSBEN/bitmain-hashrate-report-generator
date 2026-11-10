@@ -9,7 +9,9 @@ const { createApp } = require('../src/app');
 
 async function startApp(t) {
   const dataDir = await fs.mkdtemp(path.join(os.tmpdir(), 'report-routes-'));
-  const server = createApp({ dataDir }).listen(0, '127.0.0.1');
+  // Fixed thresholds, so tests don't depend on whatever the live config is set to.
+  const thresholdsFile = path.join(__dirname, 'fixtures', 'thresholds.json');
+  const server = createApp({ dataDir, thresholdsFile }).listen(0, '127.0.0.1');
   await new Promise((resolve) => server.once('listening', resolve));
   t.after(async () => {
     server.close();
@@ -66,6 +68,17 @@ test('full report lifecycle over HTTP', async (t) => {
 
   const edit = await (await fetch(`${base}/reports/${id}/edit`)).text();
   assert.match(edit, /name="miner\[runTime\]\[days\]" value="1"/);
+  assert.match(edit, /name="miner\[expectedHashrateTHs\]"/);
+  assert.match(view, /From model settings/);
+
+  // Setting expected hashrate in edit mode overrides the model's 200 TH/s.
+  await post(`/reports/${id}`, { ...formFields, 'miner[hashrateTHs]': '199', 'miner[expectedHashrateTHs]': '250' });
+  const overridden = await (await fetch(`${base}/reports/${id}`)).text();
+  assert.match(overridden, /250\.00 TH\/s/);
+  assert.match(overridden, /Set on this report/);
+  assert.match(overridden, /79\.6% of expected 250 TH\/s/);
+  const reEdit = await (await fetch(`${base}/reports/${id}/edit`)).text();
+  assert.match(reEdit, /name="miner\[expectedHashrateTHs\]" type="number" step="any" inputmode="decimal"\s+min="0" value="250"/);
 
   const updated = await post(`/reports/${id}`, { ...formFields, 'miner[hashrateTHs]': '199' });
   assert.equal(updated.status, 303);

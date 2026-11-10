@@ -81,14 +81,19 @@ function checkHashrate(value, expected, limit) {
 
 /**
  * Evaluate a report against the threshold config.
- * Returns { overall, expectedHashrateTHs, fields } where fields maps a field
+ * Returns { overall, expectedHashrateTHs, expectedSource, fields }, where
+ * expectedSource is 'report', 'model' or null, and fields maps a field
  * path (e.g. "hashboards.2.avgChipTempC") to { status, detail? }.
  * status is one of ok | warn | fail | na (value not recorded) | off (check
  * disabled). na and off never affect the overall status.
  */
 function evaluate(report, config) {
   const limits = resolveLimits(config, report.miner.model);
-  const expected = Number.isFinite(limits.expectedHashrateTHs) ? limits.expectedHashrateTHs : null;
+  // An expected hashrate set on the report itself overrides the model's.
+  const fromReport = Number.isFinite(report.miner.expectedHashrateTHs) ? report.miner.expectedHashrateTHs : null;
+  const fromModel = Number.isFinite(limits.expectedHashrateTHs) ? limits.expectedHashrateTHs : null;
+  const expected = fromReport ?? fromModel;
+  const expectedSource = fromReport !== null ? 'report' : fromModel !== null ? 'model' : null;
   const fields = {};
   const maxKeys = (group) => METRICS.filter((m) => m.group === group).map((m) => m.key);
 
@@ -111,7 +116,7 @@ function evaluate(report, config) {
     (acc, { status }) => (STATUS_RANK[status] > STATUS_RANK[acc] ? status : acc), 'na');
   const overall = worst === 'fail' ? 'fail' : worst === 'warn' ? 'warn' : 'pass';
 
-  return { overall, expectedHashrateTHs: expected, fields };
+  return { overall, expectedHashrateTHs: expected, expectedSource, fields };
 }
 
 // ---------------------------------------------------------------------------

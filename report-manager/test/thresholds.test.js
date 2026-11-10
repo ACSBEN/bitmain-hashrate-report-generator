@@ -144,3 +144,21 @@ test('normalizeThresholds keeps limits for disabled checks and drops blanks', ()
   assert.deepEqual(value.default.pfcTempC, { enabled: false });
   assert.deepEqual(value.models.S21, { expectedHashrateTHs: 200, avgChipTempC: { enabled: false } });
 });
+
+test('expected hashrate set on the report overrides the model setting', () => {
+  // 200 TH/s against the model's 200 passes; against the report's 230 it is 87% -> fail.
+  const fromModel = evaluate(build({}), config);
+  assert.equal(fromModel.expectedSource, 'model');
+  assert.equal(fromModel.fields['miner.hashrateTHs'].status, 'ok');
+
+  const fromReport = evaluate(build({ miner: { expectedHashrateTHs: 230 } }), config);
+  assert.equal(fromReport.expectedSource, 'report');
+  assert.equal(fromReport.expectedHashrateTHs, 230);
+  assert.equal(fromReport.fields['miner.hashrateTHs'].status, 'fail');
+
+  // Also works for a model with no threshold entry.
+  const unknown = evaluate(build({ miner: { model: 'Mystery', hashrateTHs: 90, expectedHashrateTHs: 100 } }), config);
+  assert.equal(unknown.expectedSource, 'report');
+  assert.equal(unknown.fields['miner.hashrateTHs'].status, 'warn');
+  assert.equal(evaluate(build({ miner: { model: 'Mystery' } }), config).expectedSource, null);
+});

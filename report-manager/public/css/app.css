@@ -95,6 +95,7 @@ legend { font-weight: 700; padding: 0 6px; margin-left: -6px; }
 .duration .with-unit input { padding-right: 24px; }
 .has-error input, .has-error select, .has-error textarea { border-color: var(--danger); background: #fff8f8; }
 .error-text { color: var(--danger); font-size: 0.8rem; margin-top: 4px; }
+.hint { color: var(--muted); font-size: 0.78rem; margin-top: 4px; }
 .form-actions { display: flex; gap: 8px; }
 
 @media print {

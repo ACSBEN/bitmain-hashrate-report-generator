@@ -18,7 +18,7 @@
   <section class="report-section">
     <h2>Miner</h2>
     <dl class="kv-grid">
-      <% for (const field of schema.MINER_FIELDS) { const c = cell(`miner.${field.key}`); %>
+      <% for (const field of schema.MINER_FIELDS.filter((f) => f.key !== 'expectedHashrateTHs')) { const c = cell(`miner.${field.key}`); %>
         <div class="kv st-<%= c.status %>" <% if (c.detail) { %>title="<%= c.detail %>"<% } %>>
           <dt><%= field.label %></dt>
           <dd><%= format.formatValue(field, report.miner[field.key]) %> <%- flag(c.status) %></dd>
@@ -27,7 +27,8 @@
       <% } %>
       <div class="kv">
         <dt>Expected Hashrate</dt>
-        <dd><%= evaluation.expectedHashrateTHs === null ? 'Model not configured' : format.formatValue({ type: 'number', unit: 'TH/s' }, evaluation.expectedHashrateTHs) %></dd>
+        <dd><%= evaluation.expectedHashrateTHs === null ? 'Not set' : format.formatValue({ type: 'number', unit: 'TH/s' }, evaluation.expectedHashrateTHs) %></dd>
+        <dd class="detail"><%= { report: 'Set on this report', model: 'From model settings' }[evaluation.expectedSource] || 'Hashrate not checked' %></dd>
       </div>
     </dl>
   </section>

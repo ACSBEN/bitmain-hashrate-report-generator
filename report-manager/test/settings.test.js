@@ -9,7 +9,8 @@ const { createApp } = require('../src/app');
 const { createStore } = require('../src/store');
 const { METRICS } = require('../src/thresholds');
 
-const CONFIG = path.join(__dirname, '..', 'config', 'thresholds.json');
+// A fixed copy, so tests don't depend on whatever the live config is set to.
+const CONFIG = path.join(__dirname, 'fixtures', 'thresholds.json');
 
 async function startApp(t) {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'report-settings-'));

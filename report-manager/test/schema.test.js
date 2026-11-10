@@ -60,3 +60,14 @@ test('accepts full ISO timestamps as report date', () => {
   assert.deepEqual(errors, {});
   assert.equal(value.reportDate, '2026-11-09');
 });
+
+test('expected hashrate is optional but must be above zero', () => {
+  assert.equal(normalizeReport(minimal).value.miner.expectedHashrateTHs, null);
+  const ok = normalizeReport({ ...minimal, miner: { ...minimal.miner, expectedHashrateTHs: '210' } });
+  assert.deepEqual(ok.errors, {});
+  assert.equal(ok.value.miner.expectedHashrateTHs, 210);
+  for (const bad of ['0', '-5', 'lots']) {
+    const { errors } = normalizeReport({ ...minimal, miner: { ...minimal.miner, expectedHashrateTHs: bad } });
+    assert.ok(errors['miner.expectedHashrateTHs'], bad);
+  }
+});

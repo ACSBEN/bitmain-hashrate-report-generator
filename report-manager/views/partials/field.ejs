@@ -22,7 +22,7 @@
     <% if (field.type === 'number') { %>
       <span class="with-unit">
         <input id="<%= id %>" name="<%= name %>" type="number" step="any" inputmode="decimal"
-               <% if (field.min !== undefined) { %>min="<%= field.min %>"<% } %> value="<%= val(raw) %>">
+               <% if (field.min !== undefined || field.positive) { %>min="<%= field.min ?? 0 %>"<% } %> value="<%= val(raw) %>">
         <span class="unit"><%= field.unit %></span>
       </span>
     <% } else { %>
@@ -30,5 +30,6 @@
              <%= field.required ? 'required' : '' %> autocomplete="off">
     <% } %>
   <% } %>
+  <% if (field.hint && !error) { %><div class="hint"><%= field.hint %></div><% } %>
   <% if (error) { %><div class="error-text"><%= error %></div><% } %>
 </div>
