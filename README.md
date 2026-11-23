@@ -5,7 +5,8 @@ A locally hosted tool for recording miner diagnostics and producing printable pe
 | Directory | What it is |
 |---|---|
 | `report-manager/` | Node.js (Express + EJS) web app to create, view, edit, print and download reports |
-| `miner-collector/` | *(planned)* Pulls live data from miners and writes report files |
+| `miner-collector/` | Node.js (Express + EJS) web app that pulls live data from Vnish miners, saves JSON snapshots and turns them into reports |
+| `API/` | Firmware API references ([Vnish](API/vnish-api.md)) |
 | `docs/` | [Data schema](docs/report-schema.md) and project plans ([initial](docs/plan.md), [thresholds](docs/plan-thresholds.md)) |
 
 ## Quick start
@@ -17,6 +18,14 @@ cd report-manager
 npm install
 npm run seed     # optional: load 3 sample reports
 npm start        # http://127.0.0.1:3000
+```
+
+To pull live data from a miner, run the collector alongside it:
+
+```bash
+cd miner-collector
+npm install
+npm start        # http://127.0.0.1:3001
 ```
 
 Other scripts: `npm run dev` restarts on file changes, and `npm test` runs the test suite. Set `PORT` or `HOST` to change the bind address. The app binds to localhost by default.

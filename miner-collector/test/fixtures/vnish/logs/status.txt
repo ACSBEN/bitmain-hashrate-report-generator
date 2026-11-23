@@ -1,0 +1,15 @@
+[2015/01/01 00:00:38] INFO: Initializing [Antminer S21 Pro Amlogic (1.3.5)]
+[2015/01/01 00:00:42] INFO: Cooling down the miner
+[2026/11/23 01:54:44] INFO: Cooling down completed
+[2026/11/23 01:54:52] INFO: Restarting (1 of 3) - Miner initialization failed
+[2026/11/23 01:54:52] INFO: Mining stopped
+[2026/11/23 01:55:06] INFO: Initializing [Antminer S21 Pro Amlogic (1.3.5)]
+[2026/11/23 01:55:10] INFO: Cooling down the miner
+[2026/11/23 01:57:10] INFO: Cooling down completed
+[2026/11/23 01:57:27] INFO: Start mining
+[2026/11/23 02:03:39] INFO: Initializing [Antminer S21 Pro Amlogic (1.3.5)]
+[2026/11/23 02:03:42] INFO: Cooling down the miner
+[2026/11/23 02:05:42] INFO: Cooling down completed
+[2026/11/23 02:05:50] INFO: Restarting (1 of 3) - Miner initialization failed
+[2026/11/23 02:05:51] INFO: Mining stopped
+[2026/11/23 02:06:11] INFO: Initializing [Antminer S21 Pro Amlogic (1.3.5)]

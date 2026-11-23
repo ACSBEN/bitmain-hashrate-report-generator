@@ -1,0 +1,15 @@
+[2026/11/23 01:45:27] ERROR: Failed load miner model file: unable to open /var/run/hwscan/miner-model.json: No such file or directory /model.c:137/
+[2026/11/23 01:45:27] ERROR: Failed to load miner model /var/run/hwscan/miner-model.json /model.c:1732/
+[2015/01/01 00:00:29] INFO: Initializing PSU
+[2015/01/01 00:00:31] INFO: PSU model: 0xc1
+[2015/01/01 00:00:32] INFO: PSU fw version: 0x1e08
+[2015/01/01 00:00:35] INFO: PSU serial: OLTT380BDAJBC0980
+[2015/01/01 00:00:36] INFO: PSU history status: 0x00000000
+[2015/01/01 00:00:36] INFO: Miner serial: PIEMFKUBDJHJG00KG
+[2015/01/01 00:00:36] INFO: Switching to manual fan control (30%)
+[2015/01/01 00:00:36] INFO: Checking fans
+[2015/01/01 00:00:38] INFO: fan#1 - ok
+[2015/01/01 00:00:38] INFO: fan#2 - ok
+[2015/01/01 00:00:38] INFO: fan#3 - ok
+[2015/01/01 00:00:38] INFO: fan#4 - ok
+[2015/01/01 00:00:38] INFO: Power OFF

@@ -1,0 +1,40 @@
+<%- include('partials/header') %>
+<div class="page-head">
+  <h1>Collect from a miner</h1>
+</div>
+
+<% if (error) { %>
+  <div class="notice notice-error" role="alert"><%= error %></div>
+<% } %>
+
+<form class="card collect-form" method="post" action="/collect">
+  <div class="field">
+    <label for="host">Miner IP address</label>
+    <div class="collect-row">
+      <input id="host" name="host" value="<%= host %>" placeholder="192.168.0.103" autocomplete="off" autofocus required>
+      <button class="btn btn-primary" type="submit">Pull data</button>
+    </div>
+    <p class="hint">The miner must be running Vnish firmware. Reading every endpoint and log takes a few seconds, and times out after 10 s.</p>
+  </div>
+</form>
+
+<h2 class="section-title">Recent snapshots</h2>
+<% if (recent.length === 0) { %>
+  <div class="card empty"><p class="muted">No snapshots yet. Pull data from a miner to create one.</p></div>
+<% } else { %>
+  <div class="card table-wrap">
+    <table class="list">
+      <thead><tr><th>Serial Number</th><th>Captured</th><th></th></tr></thead>
+      <tbody>
+        <% for (const s of recent) { %>
+          <tr>
+            <td><a href="/snapshots/<%= s.name %>"><strong><%= s.serial %></strong></a></td>
+            <td class="muted"><%= h.dateTime(s.capturedAt) %></td>
+            <td class="num"><a class="btn btn-small" href="/snapshots/<%= s.name %>/download.json">JSON</a></td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+<%- include('partials/footer') %>

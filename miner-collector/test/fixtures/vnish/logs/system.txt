@@ -1,0 +1,15 @@
+[    0.000000@0]d Booting Linux on physical CPU 0x0
+[    0.000000@0]d Linux version 4.9.269-00001-gb7210b64c470-dirty (atlas@builder) (gcc version 10.4.0 (Buildroot 2022.02.6) ) #3 SMP PREEMPT Thu Dec 22 15:17:10 EET 2022
+[    0.000000@0]d Boot CPU: AArch64 Processor [410fd034]
+[    0.000000@0]d earlycon: aml_uart0 at MMIO 0x00000000ff803000 (options '')
+[    0.000000@0]d bootconsole [aml_uart0] enabled
+[    0.000000@0]d 	07400000 - 07500000,     1024 KB, ramoops@7400000
+[    0.000000@0]d __reserved_mem_alloc_size, start:0x0000000005000000, end:0x0000000005400000, len:4 MiB
+[    0.000000@0]d 	05000000 - 05400000,     4096 KB, secmon_reserved
+[    0.000000@0]d cma: Reserved 8 MiB at 0x000000000f800000
+[    0.000000@0]d On node 0 totalpages: 65536
+[    0.000000@0]d   DMA zone: 1024 pages used for memmap
+[    0.000000@0]d   DMA zone: 0 pages reserved
+[    0.000000@0]d   DMA zone: 65536 pages, LIFO batch:15
+[    0.000000@0]d psci: probing for conduit method from DT.
+[    0.000000@0]d psci: PSCIv1.0 detected in firmware.

@@ -1,0 +1,15 @@
+Nov 23 01:45:09 buildroot syslog.info syslogd started: BusyBox v1.36.1
+Nov 23 01:45:09 buildroot kern.notice kernel: [    3.867324@3]- Removed cp15_barrier emulation handler
+Nov 23 01:45:09 buildroot kern.notice kernel: [    3.867388@3]- Enabled cp15_barrier support
+Nov 23 01:45:18 buildroot cron.info crond[1014]: crond (busybox 1.36.1) started, log level 8
+Nov 23 01:45:18 buildroot kern.warn kernel: [   13.184018@0]- meson6-dwmac ff3f0000.ethernet eth0: fail to init PTP.
+Nov 23 01:45:18 buildroot kern.info kernel: [   13.185407@0]- IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
+Nov 23 01:45:20 buildroot kern.info kernel: [   15.231302@0]d meson6-dwmac ff3f0000.ethernet eth0: Link is Up - 100Mbps/Full - flow control off
+Nov 23 01:45:20 buildroot kern.info kernel: [   15.234502@0]- IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
+Nov 23 01:45:22 buildroot daemon.info chronyd[1057]: chronyd version 4.3 starting (+CMDMON +NTP +REFCLOCK +RTC +PRIVDROP -SCFILTER -SIGND +ASYNCDNS -NTS -SECHASH +IPV6 -DEBUG)
+Nov 23 01:45:27 buildroot authpriv.info dropbear[1119]: Running in background
+Nov 23 01:45:28 buildroot daemon.info : starting pid 1133, tty '/dev/console': '/sbin/getty -L  console 0 vt100 '
+Nov 23 01:45:29 buildroot daemon.info chronyd[1057]: Selected source 38.45.64.130 (pool.ntp.org)
+Jan  1 00:00:08 buildroot syslog.info syslogd started: BusyBox v1.36.1
+Jan  1 00:00:08 buildroot kern.notice kernel: [    3.896951@2]- Removed cp15_barrier emulation handler
+Jan  1 00:00:08 buildroot kern.notice kernel: [    3.897015@2]- Enabled cp15_barrier support

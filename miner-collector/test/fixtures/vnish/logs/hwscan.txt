@@ -1,0 +1,15 @@
+[2026/11/23 01:45:09] INFO: Detecting board: aml
+[2026/11/23 01:45:09] INFO: Initializing PSU
+[2026/11/23 01:45:10] INFO: PSU model: 0xc1
+[2026/11/23 01:45:11] INFO: PSU fw version: 0x1e08
+[2026/11/23 01:45:14] INFO: PSU serial: OLTT380BDAJBC0980
+[2026/11/23 01:45:16] INFO: PSU history status: 0x00000000
+[2026/11/23 01:45:16] INFO: chain#1 - connected
+[2026/11/23 01:45:16] INFO: chain#2 - connected
+[2026/11/23 01:45:16] INFO: chain#3 - connected
+[2026/11/23 01:45:16] INFO: Reading EEPROM's
+[2026/11/23 01:45:16] ERROR: Failed to decrypt EEPROM data after 5 attempts /eeprom_v1.c:206/
+[2026/11/23 01:45:16] ERROR: Failed to parse EEPROM data /chain-info.c:130/
+[2026/11/23 01:45:16] INFO: ------------------------------------------------
+[2026/11/23 01:45:16] INFO:  01 41 33 48 42 37 30 36 30 31 00 00 00 00 00 00
+[2026/11/23 01:45:16] INFO:  C8 0C 90 4B E9 B2 81 D9 02 D3 CE 6B 38 2C A5 F2

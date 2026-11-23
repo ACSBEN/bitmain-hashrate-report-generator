@@ -1,0 +1,218 @@
+<%- include('partials/header') %>
+<%
+  const s = snapshot;
+  const perf = s.performance;
+  const fw = [s.miner.firmware.name, s.miner.firmware.version].filter(Boolean).join(' ');
+  const failed = Object.entries(s.errors || {});
+  const logTypes = Object.keys(s.logs || {});
+%>
+<div class="page-head">
+  <div>
+    <h1><%= h.text(s.miner.model) %> <span class="muted">· <%= h.text(s.miner.serialNumber) %></span></h1>
+    <p class="muted small sub">Captured <%= h.dateTime(s.capturedAt) %> from <code><%= s.source.host %></code></p>
+  </div>
+  <div class="actions">
+    <form method="post" action="/collect"><input type="hidden" name="host" value="<%= s.source.host %>"><button class="btn" type="submit">Pull again</button></form>
+    <a class="btn" href="/snapshots/<%= name %>/download.json">Download JSON</a>
+    <% if (s.reportId) { %>
+      <a class="btn btn-primary" href="<%= reportManagerUrl %>/reports/<%= s.reportId %>">View report ↗</a>
+    <% } else { %>
+      <form method="post" action="/snapshots/<%= name %>/report"><button class="btn btn-primary" type="submit">Create report</button></form>
+    <% } %>
+  </div>
+</div>
+
+<% if (created) { %>
+  <div class="notice">Report created. <a href="<%= reportManagerUrl %>/reports/<%= s.reportId %>">Open it in the report manager ↗</a></div>
+<% } else if (!s.reportId && !error) { %>
+  <div class="notice">Data pulled successfully and saved to <code>data/snapshots/<%= name %>.json</code>.</div>
+<% } %>
+<% if (error) { %>
+  <div class="notice notice-error" role="alert"><%= error %></div>
+<% } %>
+<% if (failed.length > 0) { %>
+  <div class="notice notice-warn">
+    Some sections could not be read, and are left blank:
+    <ul><% for (const [key, msg] of failed) { %><li><code><%= key %></code>: <%= msg %></li><% } %></ul>
+  </div>
+<% } %>
+
+<%# ---- Overview ---- %>
+<section class="card">
+  <div class="card-title">
+    <h2>Overview</h2>
+    <span class="pill pill-<%= h.tone(s.status.state) %>"><%= h.text(s.status.state) %></span>
+  </div>
+  <div class="stats">
+    <div class="stat"><span class="stat-label">Average hashrate</span><span class="stat-value"><%= h.num(perf.hashrate.averageTHs, 'TH/s', 2) %></span></div>
+    <div class="stat"><span class="stat-label">Realtime hashrate</span><span class="stat-value"><%= h.num(perf.hashrate.realtimeTHs, 'TH/s', 2) %></span></div>
+    <div class="stat"><span class="stat-label">Nominal hashrate</span><span class="stat-value"><%= h.num(perf.hashrate.nominalTHs, 'TH/s', 2) %></span></div>
+    <div class="stat"><span class="stat-label">Power</span><span class="stat-value"><%= h.num(perf.powerW, 'W', 0) %></span></div>
+    <div class="stat"><span class="stat-label">Efficiency</span><span class="stat-value"><%= h.num(perf.efficiencyJTH, 'J/TH', 2) %></span></div>
+  </div>
+  <div class="cols-2">
+    <%- include('partials/kv', { rows: [
+      ['Model', h.text(s.miner.model)],
+      ['Serial number', h.text(s.miner.serialNumber)],
+      ['Firmware', h.text(fw)],
+      ['Build', `${h.text(s.miner.firmware.buildName)} · ${h.text(s.miner.firmware.buildTime)}`],
+      ['Algorithm', h.text(s.miner.algorithm)],
+      ['Series / platform', `${h.text(s.miner.series)} / ${h.text(s.miner.platform)} (${h.text(s.miner.installType)})`],
+      ['Chains', `${h.text(s.miner.chainCount)} × ${h.text(s.miner.chipsPerChain)} chips`],
+      ['Uptime', s.system.uptimeSeconds === null ? h.text(s.system.uptime) : h.duration(s.system.uptimeSeconds)],
+    ] }) %>
+    <%- include('partials/kv', { rows: [
+      ['In state for', h.duration(s.status.stateTimeSeconds)],
+      ['Throttle', h.num(s.status.throttledPct, '%', 0)],
+      ['PCB temp', h.range(perf.pcbTempC)],
+      ['Chip temp', h.range(perf.chipTempC)],
+      ['HW errors', `${h.num(perf.hwErrors, '', 0)} (${h.num(perf.hwErrorsPct, '%', 3)})`],
+      ['Hashrate error', h.num(perf.hashrate.errorPct, '%', 2)],
+      ['Stock hashrate', `${h.num(perf.hashrate.stockTHs, 'TH/s', 2)} (readable boards only)`],
+      ['Devfee', h.num(perf.devfeePct, '%', 2)],
+      ['Best share / blocks', `${h.num(perf.bestShare, '', 0)} / ${h.num(perf.foundBlocks, '', 0)}`],
+      ['Restarts', h.num(s.status.restartCount, '', 0)],
+      ['Restart / reboot needed', `${h.yesNo(s.status.restartRequired)} / ${h.yesNo(s.status.rebootRequired)}`],
+    ] }) %>
+  </div>
+</section>
+
+<%# ---- Hashboards ---- %>
+<h2 class="section-title">Hashboards</h2>
+<% if (s.hashboards.length === 0) { %>
+  <div class="card empty"><p class="muted">No hashboard data.</p></div>
+<% } else { %>
+  <div class="boards-grid">
+    <% for (const board of s.hashboards) { %>
+      <%- include('partials/hashboard', { board, layout: s.chipLayout }) %>
+    <% } %>
+  </div>
+<% } %>
+
+<%# ---- PSU + Cooling ---- %>
+<div class="cols-2 gap">
+  <section class="card">
+    <div class="card-title"><h2>PSU</h2></div>
+    <%- include('partials/kv', { rows: [
+      ['Model', h.text(s.psu.model)],
+      ['Serial number', h.text(s.psu.serialNumber)],
+      ['PFC temp', h.num(s.psu.pfcTempC, '°C', 0)],
+      ['LLC1 temp', h.num(s.psu.llc1TempC, '°C', 0)],
+      ['LLC2 temp', h.num(s.psu.llc2TempC, '°C', 0)],
+      ['Power metering', h.yesNo(s.psu.powerMetering)],
+    ] }) %>
+  </section>
+
+  <section class="card">
+    <div class="card-title"><h2>Cooling</h2></div>
+    <%- include('partials/kv', { rows: [
+      ['Mode', `${h.text(s.cooling.mode)}${s.cooling.modeParam !== null ? ` (target ${s.cooling.modeParam})` : ''}`],
+      ['Fan duty', h.num(s.cooling.fanDutyPct, '%', 0)],
+      ['Fans', h.text(s.cooling.fanCount)],
+      ...(s.cooling.limits ? [
+        ['Target temp range', `${h.text(s.cooling.limits.targetTempMinC)} – ${h.text(s.cooling.limits.targetTempMaxC)} °C`],
+        ['Min fan PWM / count', `${h.num(s.cooling.limits.minFanPwm, '%', 0)} / ${h.text(s.cooling.limits.minFanCount)}`],
+      ] : []),
+    ] }) %>
+    <% if (s.cooling.fans.length > 0) { %>
+      <table class="mini">
+        <thead><tr><th>Fan</th><th class="num">RPM</th><th>Load</th><th>Status</th></tr></thead>
+        <tbody>
+          <% for (const fan of s.cooling.fans) { const pct = fan.maxRpm ? Math.round((fan.rpm / fan.maxRpm) * 100) : null; %>
+            <tr>
+              <td><%= fan.id + 1 %></td>
+              <td class="num"><%= h.num(fan.rpm, '', 0) %> <span class="muted">/ <%= h.num(fan.maxRpm, '', 0) %></span></td>
+              <td><% if (pct !== null) { %><span class="bar"><span style="width: <%= Math.min(100, pct) %>%"></span></span> <%= pct %>%<% } else { %>—<% } %></td>
+              <td><span class="pill pill-<%= h.tone(fan.status) %>"><%= h.text(fan.status) %></span></td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    <% } %>
+  </section>
+</div>
+
+<%# ---- Pools ---- %>
+<section class="card table-wrap">
+  <div class="card-title pad"><h2>Pools</h2></div>
+  <% if (s.pools.length === 0) { %>
+    <p class="muted pad">No pool data.</p>
+  <% } else { %>
+    <table class="list">
+      <thead>
+        <tr><th>#</th><th>URL</th><th>Type</th><th>User</th><th>Status</th><th class="num">Diff</th><th class="num">Accepted</th><th class="num">Rejected</th><th class="num">Stale</th><th>Last share</th><th class="num">Ping</th></tr>
+      </thead>
+      <tbody>
+        <% for (const p of s.pools) { %>
+          <tr>
+            <td><%= p.id %></td>
+            <td><code><%= h.text(p.url) %></code><%= p.tls ? ' 🔒' : '' %></td>
+            <td><%= h.text(p.type) %></td>
+            <td><%= h.text(p.user) %></td>
+            <td><span class="pill pill-<%= h.tone(p.status) %>"><%= h.text(p.status) %></span></td>
+            <td class="num"><%= h.text(p.difficulty) %></td>
+            <td class="num"><%= h.num(p.accepted, '', 0) %></td>
+            <td class="num"><%= h.num(p.rejected, '', 0) %></td>
+            <td class="num"><%= h.num(p.stale, '', 0) %></td>
+            <td><%= h.text(p.lastShareTime) %> ago</td>
+            <td class="num"><%= h.num(p.pingMs, 'ms', 0) %></td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  <% } %>
+</section>
+
+<%# ---- System + Tuning ---- %>
+<div class="cols-2 gap">
+  <section class="card">
+    <div class="card-title"><h2>System &amp; network</h2></div>
+    <% const mem = s.system.memory, net = s.system.network; %>
+    <%- include('partials/kv', { rows: [
+      ['Hostname', h.text(s.system.hostname)],
+      ['IP address', `${h.text(net.ip)} (${net.dhcp === null ? '—' : net.dhcp ? 'DHCP' : 'static'})`],
+      ['Netmask', h.text(net.netmask)],
+      ['Gateway', h.text(net.gateway)],
+      ['DNS', net.dns.length ? net.dns.join(', ') : '—'],
+      ['MAC', h.text(net.mac)],
+      ['OS', h.text(s.system.os)],
+      ['Timezone', h.text(s.system.timezone)],
+      ['Memory', `${h.bytesKB(mem.freeKB)} free of ${h.bytesKB(mem.totalKB)} (${h.num(mem.freePct, '%', 0)})`],
+      ['Buffers', `${h.bytesKB(mem.bufferKB)} (${h.num(mem.bufferPct, '%', 0)})`],
+    ] }) %>
+  </section>
+
+  <section class="card">
+    <div class="card-title"><h2>Tuning</h2></div>
+    <% const t = s.tuning, ps = t.presetSwitcher, oc = t.overclockLimits; %>
+    <%- include('partials/kv', { rows: [
+      ['Current preset', t.preset ? `${h.text(t.preset.label)}` : '—'],
+      ['Preset status', t.preset ? h.text(t.preset.status) : '—'],
+      ['Preset switcher', ps ? (ps.enabled ? 'On' : 'Off') : '—'],
+      ...(ps ? [
+        ['Switcher range', `${h.text(ps.minPreset)} – ${h.text(ps.topPreset)}`],
+        ['Switcher temps', `lower at ${h.text(ps.decreaseTemp)} °C, raise at ${h.text(ps.riseTemp)} °C, check every ${h.text(ps.checkTime)} s`],
+      ] : []),
+      ...(oc ? [
+        ['Voltage limits', `${h.num(oc.minVoltageV, '', 2)} – ${h.num(oc.maxVoltageV, 'V', 2)} (default ${h.num(oc.defaultVoltageV, 'V', 2)})`],
+        ['Frequency limits', `${h.num(oc.minFrequencyMHz, '', 0)} – ${h.num(oc.maxFrequencyMHz, 'MHz', 0)} (default ${h.num(oc.defaultFrequencyMHz, 'MHz', 0)}, warn above ${h.num(oc.warnFrequencyMHz, 'MHz', 0)})`],
+        ['Max power limit', h.num(oc.maxPowerLimitW, 'W', 0)],
+      ] : []),
+    ] }) %>
+  </section>
+</div>
+
+<%# ---- Logs ---- %>
+<section class="card">
+  <div class="card-title"><h2>Logs</h2></div>
+  <% if (logTypes.length === 0) { %>
+    <p class="muted">No logs.</p>
+  <% } %>
+  <% for (const type of logTypes) { const log = s.logs[type]; const lines = log ? log.split('\n').filter(Boolean).length : 0; %>
+    <details class="log">
+      <summary><strong><%= type %></strong> <span class="muted small"><%= log === null ? 'not available' : `${lines} lines` %></span></summary>
+      <% if (log) { %><pre><%= log %></pre><% } %>
+    </details>
+  <% } %>
+</section>
+<%- include('partials/footer') %>

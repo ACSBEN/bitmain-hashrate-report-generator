@@ -1,0 +1,15 @@
+[2026/11/23 20:10:49] INFO: =[ Tuner ]==============================
+[2026/11/23 20:10:49] INFO: Starting auto-tuning
+[2026/11/23 20:10:49] INFO: Preset: 2500 watt ~ 176 TH
+[2026/11/23 20:13:30] INFO: Collecting stats
+[2026/11/23 20:17:47] INFO: =[ Tuner ]==============================
+[2026/11/23 20:17:47] INFO: Starting auto-tuning
+[2026/11/23 20:17:47] INFO: Preset: 2500 watt ~ 176 TH
+[2026/11/23 20:24:35] INFO: Collecting stats
+[2026/11/23 20:29:38] INFO: Stats collected
+[2026/11/23 20:29:38] INFO: voltage = 14380 mV
+[2026/11/23 20:29:38] INFO: chain#1 - 51362 GH/s (97.81%)
+[2026/11/23 20:29:38] INFO: chain#2 - 51734 GH/s (98.52%)
+[2026/11/23 20:29:38] INFO: chain#3 - 51348 GH/s (97.79%)
+[2026/11/23 20:30:41] INFO: Collecting stats
+[2026/11/23 20:32:15] INFO: Stats collected

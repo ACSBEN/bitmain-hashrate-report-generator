@@ -1,0 +1,6 @@
+[23 Nov 01:53:35] 192.168.0.101:57020 "POST /api/v1/unlock" 403 "http://192.168.0.107/dashboard" 6.578ms
+[23 Nov 01:54:34] 192.168.0.101:52248 "POST /api/v1/settings" 200 "http://192.168.0.107/mining/advanced" 49.579ms
+[23 Nov 01:54:53] 192.168.0.101:57020 "POST /api/v1/settings" 200 "http://192.168.0.107/mining/performance" 48.205ms
+[23 Nov 01:54:56] 192.168.0.101:57020 "POST /api/v1/mining/restart" 200 "http://192.168.0.107/mining/pools" 4.924ms
+[23 Nov 20:10:47] 192.168.0.104:53854 "POST /api/v1/settings" 200 "http://192.168.0.103/mining/performance" 56.289ms
+[23 Nov 20:14:49] 192.168.0.104:53824 "POST /api/v1/system/reboot" 200 "http://192.168.0.103/mining/performance" 3.575ms

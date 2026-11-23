@@ -1,0 +1,101 @@
+<%
+  const chipById = new Map(board.chips.map((c) => [c.id, c]));
+  // Topology holds 0-based chip indexes; without it, lay chips out 5 wide.
+  const grid = layout && layout.grid
+    ? layout.grid
+    : Array.from({ length: Math.ceil(board.chips.length / 5) }, (_, r) => board.chips.slice(r * 5, r * 5 + 5).map((c) => c.id - 1));
+  const cols = Math.max(1, ...grid.map((row) => row.length));
+  const counts = board.chipStatuses;
+%>
+<section class="card board">
+  <div class="card-title">
+    <h3>Board <%= board.id %></h3>
+    <span class="pill pill-<%= h.tone(board.state) %>"><%= h.text(board.state) %></span>
+  </div>
+
+  <div class="stats stats-2">
+    <div class="stat"><span class="stat-label">Realtime hashrate</span><span class="stat-value"><%= h.num(board.hashrate.realtimeTHs, 'TH/s', 2) %></span></div>
+    <div class="stat"><span class="stat-label">Of ideal</span><span class="stat-value"><%= h.num(board.hashrate.percentOfIdeal, '%', 1) %></span></div>
+  </div>
+
+  <%- include('kv', { rows: [
+    ['Ideal hashrate', h.num(board.hashrate.idealTHs, 'TH/s', 2)],
+    ['Hashrate error', h.num(board.hashrate.errorPct, '%', 2)],
+    ['Frequency', h.num(board.frequencyMHz, 'MHz', 1)],
+    ['Voltage', h.num(board.voltageV, 'V', 3)],
+    ['Power', h.num(board.powerW, 'W', 0)],
+    ['HW errors', h.num(board.hwErrors, '', 0)],
+    ['PCB temp', h.range(board.pcbTempC)],
+    ['Chip temp', h.range(board.chipTempC)],
+  ] }) %>
+
+  <h4>Temperature sensors</h4>
+  <% if (board.sensors.length === 0) { %>
+    <p class="muted small">No sensor data.</p>
+  <% } else { %>
+    <table class="mini">
+      <thead><tr><th>Location</th><th class="num">PCB</th><th class="num">Chip</th><th>State</th></tr></thead>
+      <tbody>
+        <% for (const s of board.sensors) { %>
+          <tr><td>Chip <%= h.text(s.location) %></td><td class="num"><%= h.num(s.pcbTempC, '°C', 0) %></td><td class="num"><%= h.num(s.chipTempC, '°C', 0) %></td><td class="muted"><%= h.text(s.state) %></td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  <% } %>
+
+  <h4>Factory info</h4>
+  <% if (!board.factory || (!board.factory.boardModel && !board.factory.serialNumber)) { %>
+    <p class="muted small">EEPROM not readable (the miner reports N/A).</p>
+  <% } else { %>
+    <%- include('kv', { rows: [
+      ['Board model', h.text(board.factory.boardModel)],
+      ['Serial', h.text(board.factory.serialNumber)],
+      ['Chip bin', h.text(board.factory.chipBin)],
+      ['Factory freq', h.num(board.factory.frequencyMHz, 'MHz', 0)],
+      ['Factory voltage', h.num(board.factory.voltageV, 'V', 2)],
+      ['Factory hashrate', h.num(board.factory.hashrateTHs, 'TH/s', 2)],
+    ] }) %>
+  <% } %>
+
+  <h4>Chips
+    <% if (counts) { %>
+      <span class="chip-counts">
+        <span class="dot grade-red"></span><%= counts.red %>
+        <span class="dot grade-orange"></span><%= counts.orange %>
+        <span class="dot grade-grey"></span><%= counts.grey %>
+      </span>
+    <% } %>
+  </h4>
+  <% if (board.chips.length === 0) { %>
+    <p class="muted small">No chip data.</p>
+  <% } else { %>
+    <div class="chip-grid" style="grid-template-columns: repeat(<%= cols %>, 1fr)">
+      <% for (const row of grid) { for (const index of row) { const chip = chipById.get(index + 1); %>
+        <% if (!chip) { %>
+          <span class="cell cell-empty"></span>
+        <% } else { %>
+          <span class="cell grade-<%= chip.grade || 'unknown' %><%= chip.throttled ? ' throttled' : '' %>"
+            title="Chip <%= chip.id %> · <%= h.num(chip.hashrateGHs, 'GH/s', 0) %> · <%= h.num(chip.frequencyMHz, 'MHz', 0) %> · <%= h.num(chip.errors, 'errors', 0) %><%= chip.throttled ? ' · throttled' : '' %>"><%= chip.id %></span>
+        <% } %>
+      <% } } %>
+    </div>
+    <details class="chip-table">
+      <summary>All <%= board.chips.length %> chips</summary>
+      <table class="mini">
+        <thead><tr><th>Chip</th><th>Grade</th><th class="num">Hashrate</th><th class="num">Freq</th><th class="num">Errors</th><th>Throttled</th></tr></thead>
+        <tbody>
+          <% for (const chip of board.chips) { %>
+            <tr>
+              <td><%= chip.id %></td>
+              <td><span class="dot grade-<%= chip.grade || 'unknown' %>"></span><%= h.text(chip.grade) %></td>
+              <td class="num"><%= h.num(chip.hashrateGHs, 'GH/s', 0) %></td>
+              <td class="num"><%= h.num(chip.frequencyMHz, 'MHz', 0) %></td>
+              <td class="num"><%= h.num(chip.errors, '', 0) %></td>
+              <td><%= h.yesNo(chip.throttled) %></td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </details>
+  <% } %>
+</section>

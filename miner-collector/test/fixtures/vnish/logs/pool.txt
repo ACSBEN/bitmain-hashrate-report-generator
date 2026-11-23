@@ -1,0 +1,15 @@
+[2026/11/23 01:45:27] INFO: Loaded configuration from: /config/cgminer.conf
+[2015/01/01 00:00:29] INFO: Loaded configuration from: /config/cgminer.conf
+[2015/01/01 00:00:29] INFO: pool#0 - opening connection
+[2015/01/01 00:00:29] ERROR: Failed to call ioctl(soc, SIOCGIFADDR, &ifr) /util.c:3091/
+[2015/01/01 00:00:34] ERROR: pool#0 - failed to resolve pool address /util.c:2069/
+[2015/01/01 00:00:34] ERROR: pool#0 - initiate stratum failed /util.c:2827/
+[2015/01/01 00:00:34] WARN: pool#0 - not responding
+[2015/01/01 00:00:39] INFO: pool#0 - opening connection
+[2015/01/01 00:00:44] ERROR: pool#0 - failed to getaddrinfo: Try again /util.c:2072/
+[2015/01/01 00:00:44] ERROR: pool#0 - initiate stratum failed /util.c:2827/
+[2015/01/01 00:00:49] INFO: pool#0 - opening connection
+[2015/01/01 00:00:54] ERROR: pool#0 - failed to getaddrinfo: Try again /util.c:2072/
+[2015/01/01 00:00:54] ERROR: pool#0 - initiate stratum failed /util.c:2827/
+[2015/01/01 00:00:59] INFO: pool#0 - opening connection
+[2015/01/01 00:01:04] ERROR: pool#0 - failed to getaddrinfo: Try again /util.c:2072/

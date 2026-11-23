@@ -1,0 +1,6 @@
+<%# rows: array of [label, value] pairs, values already formatted %>
+<dl class="kv">
+  <% for (const [label, value] of rows) { %>
+    <dt><%= label %></dt><dd><%= value %></dd>
+  <% } %>
+</dl>
