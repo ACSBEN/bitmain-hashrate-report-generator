@@ -22,10 +22,15 @@
   </div>
 </div>
 
-<% if (created) { %>
+<% if (serialSaved) { %>
+  <div class="notice">Serial number saved.</div>
+<% } else if (created) { %>
   <div class="notice">Report created. <a href="<%= reportManagerUrl %>/reports/<%= s.reportId %>">Open it in the report manager ↗</a></div>
 <% } else if (!s.reportId && !error) { %>
   <div class="notice">Data pulled successfully and saved to <code>data/snapshots/<%= name %>.json</code>.</div>
+<% } %>
+<% if (!s.miner.serialNumber && !s.reportId) { %>
+  <div class="notice notice-warn">This miner didn't report a serial number — enter one below before creating a report.</div>
 <% } %>
 <% if (error) { %>
   <div class="notice notice-error" role="alert"><%= error %></div>
@@ -50,10 +55,20 @@
     <div class="stat"><span class="stat-label">Power</span><span class="stat-value"><%= h.num(perf.powerW, 'W', 0) %></span></div>
     <div class="stat"><span class="stat-label">Efficiency</span><span class="stat-value"><%= h.num(perf.efficiencyJTH, 'J/TH', 2) %></span></div>
   </div>
+  <% if (!s.reportId) { %>
+    <form class="field serial-form" method="post" action="/snapshots/<%= name %>/serial">
+      <label for="serialNumber">Serial number</label>
+      <div class="collect-row">
+        <input id="serialNumber" name="serialNumber" value="<%= s.miner.serialNumber || '' %>" placeholder="e.g. PIEMFKUBDJHJG00KG" maxlength="64" autocomplete="off" required>
+        <button class="btn" type="submit">Save serial</button>
+      </div>
+      <p class="hint">Enter or correct the serial by hand if the miner didn't report it. The snapshot is renamed to match.</p>
+    </form>
+  <% } %>
   <div class="cols-2">
     <%- include('partials/kv', { rows: [
       ['Model', h.text(s.miner.model)],
-      ['Serial number', h.text(s.miner.serialNumber)],
+      ['Serial number', h.text(s.miner.serialNumber) + (s.miner.serialNumberSource === 'manual' ? ' (entered manually)' : '')],
       ['Firmware', h.text(fw)],
       ['Build', `${h.text(s.miner.firmware.buildName)} · ${h.text(s.miner.firmware.buildTime)}`],
       ['Algorithm', h.text(s.miner.algorithm)],

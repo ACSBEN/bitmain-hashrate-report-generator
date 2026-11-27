@@ -93,6 +93,7 @@ input:focus { outline: 2px solid #9ec5ff; border-color: var(--accent); }
 .collect-form { max-width: 560px; }
 .collect-row { display: flex; gap: 8px; }
 .collect-row input { font-size: 1rem; }
+.serial-form { max-width: 420px; margin-bottom: 14px; }
 .section-title { font-size: 1.1rem; margin: 24px 0 10px; }
 
 /* Snapshot cards */

@@ -20,6 +20,8 @@ Set `PORT` or `HOST` to change the bind address. Set `REPORT_MANAGER_URL` if the
    - Overview
    - Each hashboard, with its sensors, factory info, chip health grid and chip table
    - PSU, Cooling, Pools, System & network, Tuning and Logs
+
+   Until a report is created, the Overview card has a field for entering or fixing the serial number by hand. Some miners don't report one, and a report needs it. Saving sets `miner.serialNumberSource: "manual"`, keeps the old value in `miner.detectedSerialNumber`, and renames the snapshot file to match the new serial.
 4. **Create report** maps the snapshot onto the [report schema](../docs/report-schema.md) and validates it with the report manager's own schema code. The mapping:
    - Miner hashrate = the average hashrate
    - Board hashrate = realtime, because the API has no per-board average

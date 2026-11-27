@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "reportDate": "2026-11-26",
+  "source": "api",
+  "notes": "Collected from 192.168.0.103 (Vnish API), snapshot HKYQATABDJAAB02NN_2026-11-27T03-16-44Z.",
+  "miner": {
+    "serialNumber": "HKYQATABDJAAB02NN",
+    "model": "Antminer S21",
+    "firmwareVersion": "Vnish 1.3.5",
+    "hashrateTHs": 205.846,
+    "expectedHashrateTHs": null,
+    "runTimeSeconds": 94200
+  },
+  "hashboards": [
+    {
+      "slot": 0,
+      "serialNumber": "HKYQYRHBDJAAB09EJ",
+      "model": "BHB68603",
+      "hashrateTHs": 73.24,
+      "avgPcbTempC": 40.5,
+      "pcbTempDeltaC": 19,
+      "avgChipTempC": 55.5,
+      "chipTempDeltaC": 19
+    },
+    {
+      "slot": 1,
+      "serialNumber": "THQGYRHBDJAJE062M",
+      "model": "BHB68603",
+      "hashrateTHs": 70.258,
+      "avgPcbTempC": 37.5,
+      "pcbTempDeltaC": 15,
+      "avgChipTempC": 52.5,
+      "chipTempDeltaC": 15
+    },
+    {
+      "slot": 2,
+      "serialNumber": "THQGYS3BDJCJD0AEZ",
+      "model": "BHB68606",
+      "hashrateTHs": 63.973,
+      "avgPcbTempC": 37,
+      "pcbTempDeltaC": 16,
+      "avgChipTempC": 52,
+      "chipTempDeltaC": 16
+    }
+  ],
+  "psu": {
+    "pfcTempC": 25,
+    "avgLlcTempC": 32.5,
+    "llcTempDeltaC": 3
+  },
+  "id": "2fec334d-c3a0-4271-a84a-97ee9bbad0c5",
+  "createdAt": "2026-11-27T03:17:56.020Z",
+  "updatedAt": "2026-11-27T03:17:56.020Z"
+}

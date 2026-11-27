@@ -35,16 +35,54 @@ module.exports = function collectRoutes({ snapshots, reportsDir, fetchImpl, time
     return snapshot;
   }
 
+  function renderSnapshot(res, name, snapshot, { status = 200, created = false, serialSaved = false, error = null } = {}) {
+    res.status(status).render('snapshot', {
+      title: snapshot.miner.serialNumber || name,
+      name,
+      snapshot,
+      created,
+      serialSaved,
+      error,
+    });
+  }
+
   router.get('/snapshots/:name', async (req, res) => {
     const snapshot = await load(req, res);
     if (!snapshot) return;
-    res.render('snapshot', {
-      title: snapshot.miner.serialNumber || req.params.name,
-      name: req.params.name,
-      snapshot,
+    renderSnapshot(res, req.params.name, snapshot, {
       created: req.query.created === '1',
-      error: null,
+      serialSaved: req.query.serial === '1',
     });
+  });
+
+  router.post('/snapshots/:name/serial', async (req, res) => {
+    const snapshot = await load(req, res);
+    if (!snapshot) return;
+    if (snapshot.reportId) return res.redirect(303, `/snapshots/${req.params.name}`);
+    const serialNumber = String(req.body.serialNumber ?? '').trim();
+    if (!serialNumber || serialNumber.length > 64) {
+      return renderSnapshot(res, req.params.name, snapshot, {
+        status: 422,
+        error: 'Enter a serial number of up to 64 characters.',
+      });
+    }
+    const { miner } = snapshot;
+    const updated = {
+      ...snapshot,
+      miner: {
+        ...miner,
+        serialNumber,
+        serialNumberSource: 'manual',
+        detectedSerialNumber: miner.serialNumberSource === 'manual' ? miner.detectedSerialNumber : miner.serialNumber,
+      },
+    };
+    let name;
+    try {
+      name = await snapshots.replace(req.params.name, updated);
+    } catch (err) {
+      return renderSnapshot(res, req.params.name, snapshot, { status: 409, error: err.message });
+    }
+    res.redirect(303, `/snapshots/${name}?serial=1`);
   });
 
   router.get('/snapshots/:name/download.json', async (req, res) => {
@@ -63,11 +101,8 @@ module.exports = function collectRoutes({ snapshots, reportsDir, fetchImpl, time
     } catch (err) {
       if (!(err instanceof ValidationError)) throw err;
       const fields = Object.entries(err.errors).map(([field, msg]) => `${field}: ${msg}`).join('; ');
-      return res.status(422).render('snapshot', {
-        title: snapshot.miner.serialNumber || req.params.name,
-        name: req.params.name,
-        snapshot,
-        created: false,
+      return renderSnapshot(res, req.params.name, snapshot, {
+        status: 422,
         error: `This snapshot can't be turned into a report: ${fields}`,
       });
     }

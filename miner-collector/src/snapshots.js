@@ -44,6 +44,18 @@ function createSnapshotStore(dir) {
     return updated;
   }
 
+  // Overwrite with `snapshot`, moving the file if its serial (and so its name)
+  // changed. Returns the new name.
+  async function replace(name, snapshot) {
+    const newName = nameFor(snapshot);
+    if (newName !== name && await get(newName)) {
+      throw new Error(`A snapshot named ${newName} already exists.`);
+    }
+    await writeJsonAtomic(fileFor(newName), snapshot);
+    if (newName !== name) await fs.unlink(fileFor(name));
+    return newName;
+  }
+
   // Newest first. Names end in a sortable UTC timestamp, so sort on that
   // rather than opening every (log-heavy) file.
   async function list({ limit = 20 } = {}) {
@@ -67,7 +79,7 @@ function createSnapshotStore(dir) {
       .slice(0, limit);
   }
 
-  return { save, get, update, list };
+  return { save, get, update, replace, list };
 }
 
 module.exports = { createSnapshotStore, isValidName, nameFor };

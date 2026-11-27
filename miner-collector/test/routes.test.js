@@ -6,7 +6,7 @@ const fs = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
 const { createApp } = require('../src/app');
-const { stubFetch } = require('./helpers');
+const { stubFetch, loadJson } = require('./helpers');
 
 async function startApp(t, { fetchImpl = stubFetch() } = {}) {
   const tmp = await fs.mkdtemp(path.join(os.tmpdir(), 'collector-routes-'));
@@ -136,4 +136,61 @@ test('unknown or malformed snapshot names are 404s', async (t) => {
   assert.equal((await fetch(base + '/snapshots/nope')).status, 404);
   assert.equal((await fetch(base + '/snapshots/..%2F..%2Fpackage')).status, 404);
   assert.equal((await fetch(base + '/snapshots/ABC_2026-01-01T00-00-00Z')).status, 404);
+});
+
+// A miner whose /info and /model don't include a serial.
+function noSerialFetch() {
+  const without = (key) => () => { const body = loadJson(key); delete body.serial; return Response.json(body); };
+  return stubFetch({ '/info': without('info'), '/model': without('model') });
+}
+
+test('a missing serial can be entered by hand, which renames the snapshot', async (t) => {
+  const { base, post, snapshotDir, reportsDir } = await startApp(t, { fetchImpl: noSerialFetch() });
+  const location = (await post('/collect', { host: '192.168.0.103' })).headers.get('location');
+  assert.match(location, /^\/snapshots\/unknown_/);
+  const html = await (await fetch(base + location)).text();
+  assert.match(html, /didn(&#39;|')t report a serial number/);
+  assert.match(html, /name="serialNumber"/);
+
+  const stamp = location.split('_')[1];
+  const res = await post(`${location}/serial`, { serialNumber: '  ABC123  ' });
+  assert.equal(res.status, 303);
+  assert.equal(res.headers.get('location'), `/snapshots/ABC123_${stamp}?serial=1`);
+
+  assert.deepEqual(await fs.readdir(snapshotDir), [`ABC123_${stamp}.json`]);
+  const saved = JSON.parse(await fs.readFile(path.join(snapshotDir, `ABC123_${stamp}.json`), 'utf8'));
+  assert.equal(saved.miner.serialNumber, 'ABC123');
+  assert.equal(saved.miner.serialNumberSource, 'manual');
+  assert.equal(saved.miner.detectedSerialNumber, null);
+
+  const page = await (await fetch(base + res.headers.get('location'))).text();
+  assert.match(page, /Serial number saved/);
+  assert.match(page, /ABC123 \(entered manually\)/);
+  assert.match(await (await fetch(base + '/')).text(), /ABC123/);
+
+  // A second edit keeps the originally detected value.
+  const second = await post(`/snapshots/ABC123_${stamp}/serial`, { serialNumber: 'XYZ789' });
+  const edited = `/snapshots/XYZ789_${stamp}`;
+  assert.equal(second.headers.get('location'), `${edited}?serial=1`);
+  const resaved = JSON.parse(await fs.readFile(path.join(snapshotDir, `XYZ789_${stamp}.json`), 'utf8'));
+  assert.equal(resaved.miner.detectedSerialNumber, null);
+
+  assert.equal((await post(`${edited}/report`)).status, 303);
+  const [file] = (await fs.readdir(reportsDir)).filter((f) => f.endsWith('.json'));
+  assert.equal(JSON.parse(await fs.readFile(path.join(reportsDir, file), 'utf8')).miner.serialNumber, 'XYZ789');
+
+  // Once a report exists the serial can't be changed here.
+  assert.doesNotMatch(await (await fetch(base + edited)).text(), /name="serialNumber"/);
+  await post(`${edited}/serial`, { serialNumber: 'OTHER' });
+  assert.deepEqual(await fs.readdir(snapshotDir), [`XYZ789_${stamp}.json`]);
+});
+
+test('an empty serial is rejected', async (t) => {
+  const { post, snapshotDir } = await startApp(t, { fetchImpl: noSerialFetch() });
+  const location = (await post('/collect', { host: '192.168.0.103' })).headers.get('location');
+  const before = await fs.readdir(snapshotDir);
+  const res = await post(`${location}/serial`, { serialNumber: '   ' });
+  assert.equal(res.status, 422);
+  assert.match(await res.text(), /Enter a serial number/);
+  assert.deepEqual(await fs.readdir(snapshotDir), before);
 });
